@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>IAMNOBODY — Musée virtuel</title><link rel="stylesheet" href="/musee.css"></head>
+<body>
+<main class="experience">
+  <div id="scene" aria-label="Salle d’exposition virtuelle"></div>
+  <header class="barre-haute"><a class="marque" href="/galerie">IAMNOBODY<span>LE MUSÉE</span></a><div class="numero-salle"><span id="numero-salle">01 / LA SALLE DES REGARDS</span></div><button id="aide-bouton" aria-expanded="false" aria-controls="aide">Comment visiter ?</button></header>
+  <div class="identite-salle" id="identite"><p>UNE RENCONTRE EN CINQ ŒUVRES</p><h1 id="nom-salle">La salle<br>des regards.</h1><p class="invitation">Des lignes, des visages, des présences.<br>Approchez-vous.</p></div>
+  <div id="aide" class="aide" hidden><p>Utilisez les boutons <strong>Précédent / Suivant</strong>, les flèches du clavier, ou choisissez une œuvre dans la rangée du bas.</p><p>Cliquez sur un tableau pour vous placer devant. Faites glisser pour regarder autour de vous.</p><button id="fermer-aide">Compris</button></div>
+  <p id="statut" class="statut" role="status">Préparation de votre visite…</p>
+  <nav class="choix-salles" aria-label="Choisir une salle"><button type="button" data-salle="0" aria-pressed="true">Salle 1</button><button type="button" data-salle="1" aria-pressed="false">Salle 2</button><button type="button" data-salle="2" aria-pressed="false">Salle 3</button></nav>
+  <div class="actions-hautes"><button id="vue-ensemble">↗ Vue de la salle</button><button id="plein-ecran">⛶ Plein écran</button></div>
+  <section class="cartel" id="cartel" aria-live="polite" hidden><p id="cartel-numero" class="eyebrow"></p><h2 id="titre"></h2><p id="sous-titre">Édition de 49 tirages · Dibond</p><button id="ouvrir-fiche">Découvrir l’œuvre <span>↗</span></button></section>
+  <nav class="parcours" aria-label="Parcours des œuvres"><button id="precedent" aria-label="Œuvre précédente">← <span>Précédent</span></button><div id="miniatures" class="miniatures"></div><button id="suivant" aria-label="Œuvre suivante"><span>Suivant</span> →</button></nav>
+  <div class="pied-visite"><span id="pied-salle">SALLE 01</span><span id="compteur">5 ŒUVRES À RENCONTRER</span><a href="/galerie">Quitter la visite ↗</a></div>
+  <aside class="fiche" id="fiche" aria-labelledby="fiche-titre" hidden><button id="fermer-fiche" aria-label="Fermer la fiche">×</button><p class="eyebrow">L’ŒUVRE</p><img id="fiche-image" alt=""><h2 id="fiche-titre"></h2><p id="description"></p><p class="edition">49 tirages, tous formats confondus.<br>Finition <span id="finition"></span>.</p><a id="lien-fiche" target="_blank" rel="noopener">Voir les formats et les prix ↗</a><p class="bientot">Tirages bientôt disponibles.</p></aside>
+  <div class="alternative" id="alternative" hidden><h2>Les œuvres de cette salle</h2><p>Votre appareil ne permet pas la visite 3D. Retrouvez la collection dans la galerie.</p><a href="/galerie">Explorer la galerie →</a><ul class="liste-accessible"><% oeuvres.forEach(o => { %><li><a href="/oeuvre/<%= o.id %>"><%= o.titre %></a></li><% }); %></ul></div>
+<noscript><section class="sans-3d"><h2>Les œuvres du musée</h2><p>Activez JavaScript pour la visite 3D, ou retrouvez les œuvres ci-dessous.</p><ul class="liste-accessible"><% oeuvres.forEach(o => { %><li><a href="/oeuvre/<%= o.id %>"><%= o.titre %></a></li><% }); %></ul></section></noscript>
+<% if (!oeuvres.length) { %><section class="sans-3d"><h2>La première exposition se prépare</h2><a href="/galerie">Retour à la galerie</a></section><% } %>
+</main><script type="module" src="/musee.js"></script></body></html>

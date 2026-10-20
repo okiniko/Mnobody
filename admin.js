@@ -1,33 +1,12 @@
 const express = require("express");
 const { routesCategories } = require("./admin-categories");
 const { routesProduits } = require("./admin-produits");
+const { routesOeuvres } = require("./admin-oeuvres");
 const crypto = require("node:crypto");
 const { promisify } = require("node:util");
 const scrypt = promisify(crypto.scrypt);
 const empreinte = valeur => crypto.createHash("sha256").update(valeur).digest("hex");
 const COOKIE = "mnobody_admin";
-
-function preparerAdmin(db) {
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS administrateur (
-      id INTEGER PRIMARY KEY CHECK (id = 1),
-      identifiant TEXT NOT NULL,
-      sel TEXT NOT NULL,
-      mot_de_passe TEXT NOT NULL
-    );
-    CREATE TABLE IF NOT EXISTS sessions_admin (
-      jeton TEXT PRIMARY KEY,
-      csrf TEXT NOT NULL,
-      connectee INTEGER NOT NULL DEFAULT 0,
-      expiration INTEGER NOT NULL
-    );
-    CREATE TABLE IF NOT EXISTS tentatives_admin (
-      cle TEXT PRIMARY KEY,
-      nombre INTEGER NOT NULL,
-      expiration INTEGER NOT NULL
-    );
-  `);
-}
 
 async function definirAdministrateur(db, identifiant, motDePasse) {
   if (!/^[a-zA-Z0-9_.@-]{3,100}$/.test(identifiant)) {
@@ -36,7 +15,6 @@ async function definirAdministrateur(db, identifiant, motDePasse) {
   if (typeof motDePasse !== "string" || motDePasse.length < 14 || motDePasse.length > 256) {
     throw new Error("Le mot de passe doit contenir entre 14 et 256 caractères.");
   }
-  preparerAdmin(db);
   const sel = crypto.randomBytes(32).toString("hex");
   const hash = (await scrypt(motDePasse, sel, 64)).toString("hex");
   db.exec("BEGIN IMMEDIATE");
@@ -52,7 +30,6 @@ async function definirAdministrateur(db, identifiant, motDePasse) {
 }
 
 function installerAdmin(app, db, { secureCookies = true } = {}) {
-  preparerAdmin(db);
   const router = express.Router();
   const optionsCookie = { httpOnly: true, secure: secureCookies, sameSite: "strict", path: "/admin" };
   const lireSession = db.prepare("SELECT * FROM sessions_admin WHERE jeton = ? AND expiration > ?");
@@ -97,6 +74,17 @@ function installerAdmin(app, db, { secureCookies = true } = {}) {
 
   router.get("/connexion", (req, res) => {
     if (req.sessionAdmin?.connectee) return res.redirect("/admin");
+    if (!req.sessionAdmin) {
+      const cle = "session:" + empreinte(req.ip || "inconnue");
+      const nombre = db.prepare("SELECT nombre FROM tentatives_admin WHERE cle = ?").get(cle)?.nombre || 0;
+      const total = db.prepare("SELECT count(*) AS n FROM sessions_admin WHERE connectee = 0").get().n;
+      if (nombre >= 20 || total >= 1000) {
+        res.set("Retry-After", "1200");
+        return res.status(429).send("Trop de demandes. Réessayez plus tard.");
+      }
+      db.prepare(`INSERT INTO tentatives_admin VALUES (?, 1, ?)
+        ON CONFLICT(cle) DO UPDATE SET nombre = nombre + 1`).run(cle, Date.now() + 1200000);
+    }
     const session = req.sessionAdmin || creerSession(res, false);
     return res.render("admin/connexion", { csrf: session.csrf, erreur: null });
   });
@@ -142,6 +130,7 @@ function installerAdmin(app, db, { secureCookies = true } = {}) {
   });
   router.use("/categories", routesCategories(db));
   router.use("/produits", routesProduits(db));
+  router.use("/oeuvres", routesOeuvres(db));
   router.get("/", (req, res) => {
     res.render("admin/index", { csrf: req.sessionAdmin.csrf });
   });

@@ -1,0 +1,42 @@
+<%- include("partials/header", { titre: oeuvre.titre }) %>
+<main class="page-oeuvre">
+  <% const dibonds = variantes.filter(v => v.support === 'dibond').sort((a, b) => a.largeur_mm * a.hauteur_mm - b.largeur_mm * b.hauteur_mm);
+     const venteDibondOuverte = dibonds.some(v => v.disponible === 1);
+     const euros = prix => new Intl.NumberFormat('fr-FR', {style:'currency',currency:'EUR'}).format(prix); %>
+  <a href="/galerie" class="retour-boutique">← Galerie des œuvres</a>
+  <article>
+    <div class="presentation-oeuvre">
+      <img class="visuel-oeuvre" src="/<%= oeuvre.image %>" alt="<%= oeuvre.titre %>">
+      <div>
+        <p class="surtitre-art">IAMNOBODY · Œuvre</p><h1><%= oeuvre.titre %></h1>
+        <% if (oeuvre.serie) { %><p>Série <%= oeuvre.serie %></p><% } %>
+        <% if (oeuvre.annee) { %><p><%= oeuvre.annee %></p><% } %>
+        <p class="texte-oeuvre"><%= oeuvre.description %></p>
+        <p><%= oeuvre.edition === 'limitee' ? 'Édition limitée à ' + oeuvre.tirage + ' tirages Dibond, tous formats confondus.' : 'Édition ouverte.' %></p>
+        <% if (oeuvre.edition === 'limitee') { %>
+          <p>Maximum 3 exemplaires par œuvre et par client, tous formats et commandes confondus.</p>
+          <p class="statut-tirage" role="status"><%= !venteDibondOuverte ? 'Tirages bientôt disponibles. Les ventes ne sont pas encore ouvertes.' : restants > 0 ? restants + ' exemplaire(s) restant(s) dans cette édition.' : 'Édition épuisée ou entièrement réservée.' %></p>
+        <% } %>
+      </div>
+    </div>
+    <% if (images.length) { %><div class="images-oeuvre"><% images.forEach((image, i) => { %><img src="/<%= image.image %>" alt="<%= oeuvre.titre %> — vue <%= i + 2 %>" loading="lazy"><% }); %></div><% } %>
+    <section aria-labelledby="tirages"><h2 id="tirages">Tirages sur Dibond</h2>
+      <% if (!dibonds.length) { %><p>Les formats seront annoncés prochainement.</p><% } %>
+      <div class="formats-oeuvre"><% dibonds.forEach((v, i) => { %>
+        <article class="format-oeuvre">
+          <p class="surtitre-art"><%= dibonds.length === 3 ? ['Petit format', 'Moyen format', 'Grand format'][i] : 'Tirage Dibond' %></p>
+          <h3><%= v.largeur_mm / 10 %> × <%= v.hauteur_mm / 10 %> <small>cm</small></h3>
+          <p>Finition <%= v.finition || 'à préciser' %></p>
+          <p class="prix-tirage"><%= euros(v.prix) %></p>
+          <% if (v.disponible === 1 && (oeuvre.edition !== 'limitee' || restants > 0)) { %>
+            <a class="voir-plus" href="/produit/<%= v.id %>">Choisir ce format</a>
+          <% } else { %><p class="statut-tirage"><%= v.disponible !== 1 ? 'Bientôt disponible' : 'Indisponible' %></p><% } %>
+        </article>
+      <% }); %></div>
+    </section>
+    <% const textiles = variantes.filter(v => v.support === 'textile' && v.disponible === 1); if (textiles.length) { %>
+    <section aria-labelledby="textiles"><h2 id="textiles">Déclinaisons textiles</h2><p>Les textiles ne font pas partie de l’édition limitée des tirages Dibond.</p><ul class="liste-variantes"><% textiles.forEach(v => { %><li><a href="/produit/<%= v.id %>"><%= v.nom %> · <%= v.taille %><%= v.couleur ? ' · ' + v.couleur : '' %> — <%= v.prix.toFixed(2) %> €</a></li><% }); %></ul></section>
+    <% } %>
+  </article>
+</main>
+<%- include("partials/footer") %>

@@ -1,29 +1,6 @@
 <!DOCTYPE html>
-<html lang="fr">
-
-<head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title><%= titre %></title>
-
-  <link rel="stylesheet" href="/style.css">
-</head>
-
-<body>
-
-<header>
-  <a href="/">
-    IAMNOBODY
-  </a>
-
-  <nav>
-    <a href="/">Accueil</a>
-    <a href="/boutique">Boutique</a>
-    <a href="/panier">Panier</a>
-  </nav>
-</header>
+<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title><%= titre %></title><meta name="description" content="IAMNOBODY, galerie d’art : des visages, des arabesques et des couleurs. Découvrez les œuvres, leurs éditions limitées et le musée virtuel."><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/identite.css"></head>
+<body class="site-art">
+<a class="aller-contenu" href="#contenu-site">Aller au contenu</a>
+<header class="entete-site"><a class="marque-site" href="/">IAMNOBODY<span>GALERIE D’ART · ÉDITIONS LIMITÉES</span></a><nav aria-label="Navigation principale"><% const ici = typeof chemin === 'string' ? chemin : ''; %><a href="/" <%- ici === '/' ? 'aria-current="page"' : '' %>>Accueil</a><a href="/galerie" <%- ici === '/galerie' || ici.startsWith('/oeuvre/') ? 'aria-current="page"' : '' %>>Les œuvres</a><a href="/musee">Le musée <span aria-hidden="true">↗</span></a><a href="/panier" <%- ici === '/panier' ? 'aria-current="page"' : '' %>>Panier</a></nav></header>
+<div id="contenu-site" tabindex="-1"></div>

@@ -157,6 +157,7 @@ this.tri.setAttribute("aria-label", "Trier les produits");
   creerProduit(produit) {
     const produitCard = document.createElement("div");
     produitCard.classList.add("carte");
+    if (produit.oeuvre_id) produitCard.classList.add("carte-oeuvre-produit");
 
     const cardNom = document.createElement("h2");
     const cardDesc = document.createElement("p");
@@ -174,7 +175,9 @@ cardDesc.textContent = produit.description;
 cardPrice.textContent = produit.prix.toFixed(2) + " €";
     cardImage.src = produit.image;
     cardImage.alt = produit.nom;
-    cardADD.textContent = "AJOUTER";
+    cardImage.loading = "lazy";
+    cardADD.textContent = produit.exemplaires_restants === 0 ? "ÉDITION ÉPUISÉE" : "AJOUTER";
+    cardADD.disabled = produit.exemplaires_restants === 0;
 
     cardADD.addEventListener("click", (event) => {
        event.stopPropagation();
@@ -319,15 +322,27 @@ class Panier {
           retires++;
           return [];
         }
-        if (["nom", "description", "image", "prix", "categorie_id", "categorie"]
+        if (["nom", "description", "image", "prix", "categorie_id", "categorie", "oeuvre_id", "support", "largeur_mm", "hauteur_mm", "taille", "couleur", "finition"]
           .some(champ => item[champ] !== produit[champ])) {
           actualises++;
         }
         return [{ ...produit, quantite: item.quantite }];
       });
+      const limites = new Map();
+      let quantitesReduites = false;
+      this.items = this.items.flatMap(item => {
+        if (item.support !== 'dibond' || !item.oeuvre_id) return [item];
+        const plafond = Math.min(3, item.exemplaires_restants ?? 49);
+        const deja = limites.get(item.oeuvre_id) || 0;
+        const quantite = Math.min(item.quantite, Math.max(0, plafond - deja));
+        if (quantite !== item.quantite) quantitesReduites = true;
+        limites.set(item.oeuvre_id, deja + quantite);
+        return quantite ? [{ ...item, quantite }] : [];
+      });
       this.majPanier();
       {
         const messages = [];
+        if (quantitesReduites) messages.push("Les quantités ont été ajustées à la limite de 3 tirages par œuvre et aux exemplaires disponibles.");
         if (actualises) messages.push("Les informations et les prix de votre panier ont été actualisés.");
         if (retires) messages.push("Les produits qui ne sont plus disponibles ont été retirés du panier.");
         if (messages.length) this.afficherAvis([avisPrecedent, ...messages].filter(Boolean).join(" "));
@@ -341,7 +356,19 @@ class Panier {
     }
   }
 
+  peutAjouter(produit) {
+    if (produit.support !== 'dibond' || !produit.oeuvre_id) return true;
+    const quantite = this.items.filter(item => item.support === 'dibond' && item.oeuvre_id === produit.oeuvre_id)
+      .reduce((somme, item) => somme + item.quantite, 0);
+    const plafond = Math.min(3, produit.exemplaires_restants ?? 49);
+    if (quantite >= plafond) {
+      this.afficherAvis(plafond === 0 ? "Cette édition est épuisée ou entièrement réservée." : "Maximum 3 tirages par œuvre et par client, tous formats et commandes confondus. La disponibilité sera revérifiée lors de la commande.");
+      return false;
+    }
+    return true;
+  }
   addToCart(produit) {
+  if (!this.peutAjouter(produit)) return;
   const produitExistant = this.items.find(item => item.id === produit.id);
 
   if (produitExistant) {
@@ -398,7 +425,7 @@ class Panier {
 
     const nom = document.createElement("span");
     nom.textContent =
-`${item.nom} - ${item.prix.toFixed(2)} €`;
+`${item.nom}${item.support === 'dibond' ? ` · Dibond ${item.largeur_mm / 10} × ${item.hauteur_mm / 10} cm` : item.support === 'textile' ? ` · ${item.taille}${item.couleur ? ' · ' + item.couleur : ''}` : ''} - ${item.prix.toFixed(2)} €`;
     const moins = document.createElement("button");
     moins.textContent = "-";
     moins.setAttribute(
@@ -423,7 +450,10 @@ class Panier {
   `Supprimer ${item.nom} du panier`
 );
 
+    plus.disabled = item.support === "dibond" && item.oeuvre_id &&
+      this.items.filter(p => p.support === "dibond" && p.oeuvre_id === item.oeuvre_id).reduce((n,p) => n+p.quantite, 0) >= Math.min(3, item.exemplaires_restants ?? 49);
     plus.addEventListener("click", () => {
+      if (!this.peutAjouter(item)) return;
       item.quantite++;
       this.majPanier();
     });

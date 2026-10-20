@@ -1,0 +1,20 @@
+<%- include("partials/header", { titre: "Galerie des œuvres — IAMNOBODY" }) %>
+<main class="page-galerie">
+  <div class="entete-galerie">
+    <p class="surtitre-art">IAMNOBODY · Galerie d’art</p>
+    <h1>Des visages à explorer.<br>Des œuvres à habiter.</h1>
+    <p>Regards, arabesques et jeux de lumière : découvrez les œuvres et leurs tirages sur aluminium composite.</p>
+  </div>
+  <div class="reperes-galerie"><span>Éditions limitées</span><span>Formats adaptés à chaque œuvre</span><span>Finitions mates ou brillantes</span></div>
+  <% if (!oeuvres.length) { %><p>La galerie se prépare.</p><% } %>
+  <div class="grille-oeuvres"><% oeuvres.forEach(o => { %>
+    <article class="carte-oeuvre">
+      <a href="/oeuvre/<%= o.id %>" class="lien-oeuvre"><div class="cadre-oeuvre"><img src="/<%= o.image %>" alt="<%= o.titre %>" loading="lazy"></div><h2><%= o.titre %></h2></a>
+      <% if (o.serie) { %><p><%= o.serie %></p><% } %>
+      <p class="legende-edition"><%= o.edition === 'limitee' ? 'Édition de ' + o.tirage + ' tirages' : 'Édition ouverte' %></p>
+      <% if (o.prix_dibond !== null) { %><p>À partir de <%= new Intl.NumberFormat('fr-FR', {style:'currency',currency:'EUR'}).format(o.prix_dibond / 100) %></p><% } %>
+      <% if (!o.formats_disponibles) { %><p class="statut-tirage">Tirages bientôt disponibles</p><% } %>
+    </article>
+  <% }); %></div>
+</main>
+<%- include("partials/footer") %>

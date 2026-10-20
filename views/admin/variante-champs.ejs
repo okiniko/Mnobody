@@ -1,0 +1,15 @@
+<fieldset class="variante-admin">
+  <legend>Déclinaison d’une œuvre (facultative)</legend>
+  <p>Sans rattachement, ce produit conserve son fonctionnement actuel. Une déclinaison est visible uniquement si son œuvre est publiée et si elle est disponible.</p>
+  <label for="oeuvre-id">Œuvre</label><select id="oeuvre-id" name="oeuvre_id"><option value="">Produit indépendant</option><% oeuvres.forEach(o => { %><option value="<%= o.id %>" <%= String(valeurs.oeuvre_id) === String(o.id) ? 'selected' : '' %>><%= o.titre %> (<%= o.statut %>)</option><% }); %></select>
+  <label for="support">Support</label><select id="support" name="support"><option value="">Choisir un support</option><option value="dibond" <%= valeurs.support === 'dibond' ? 'selected' : '' %>>Dibond</option><option value="textile" <%= valeurs.support === 'textile' ? 'selected' : '' %>>Textile</option></select>
+  <label for="largeur">Largeur Dibond (mm)</label><input id="largeur" name="largeur_mm" type="number" min="1" max="10000" value="<%= valeurs.largeur_mm || '' %>">
+  <label for="hauteur">Hauteur Dibond (mm)</label><input id="hauteur" name="hauteur_mm" type="number" min="1" max="10000" value="<%= valeurs.hauteur_mm || '' %>">
+  <label for="finition">Finition ou accrochage (facultatif)</label><input id="finition" name="finition" maxlength="200" value="<%= valeurs.finition || '' %>">
+  <label for="taille">Taille textile</label><input id="taille" name="taille" maxlength="40" value="<%= valeurs.taille || '' %>" placeholder="M, L…">
+  <label for="couleur">Couleur textile (facultative)</label><input id="couleur" name="couleur" maxlength="200" value="<%= valeurs.couleur || '' %>">
+  <label for="disponible">Disponibilité</label><select id="disponible" name="disponible"><option value="1" <%= String(valeurs.disponible) !== '0' ? 'selected' : '' %>>Disponible</option><option value="0" <%= String(valeurs.disponible) === '0' ? 'selected' : '' %>>Indisponible</option></select>
+  <label for="fournisseur">Fournisseur (facultatif)</label><select id="fournisseur" name="fournisseur"><option value="">MerchOne par défaut</option><option value="merchone" <%= valeurs.fournisseur === 'merchone' ? 'selected' : '' %>>MerchOne</option><option value="pixartprinting" <%= valeurs.fournisseur === 'pixartprinting' ? 'selected' : '' %>>Pixartprinting</option><option value="spreadconnect" <%= valeurs.fournisseur === 'spreadconnect' ? 'selected' : '' %>>Spreadconnect</option></select>
+  <label for="reference-fournisseur">Référence fournisseur (facultative)</label><input id="reference-fournisseur" name="reference_fournisseur" maxlength="200" value="<%= valeurs.reference_fournisseur || '' %>">
+  <small>Ces références sont privées et ne déclenchent aucune commande fournisseur. Pour détacher un produit, choisissez « Produit indépendant » et videz les autres champs de déclinaison.</small>
+</fieldset>

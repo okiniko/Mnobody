@@ -3,12 +3,12 @@
 }) %>
 
 <main class="page-produit">
-<a href="/boutique" class="retour-boutique">
-    ← Retour à la boutique
+<a href="/galerie" class="retour-boutique">
+    ← Retour à la galerie
   </a>
   <section class="fiche-produit">
 
-    <div class="fiche-produit-image">
+    <div class="fiche-produit-image<%= produit.oeuvre_id ? ' image-oeuvre' : '' %>">
       <img
         src="/<%= produit.image %>"
         alt="<%= produit.nom %>"
@@ -17,7 +17,17 @@
 
     <div class="fiche-produit-infos">
 
+      <% if (produit.oeuvre_id) { %>
+        <p><a href="/oeuvre/<%= produit.oeuvre_id %>">Découvrir l’œuvre « <%= produit.oeuvre_titre %> »</a></p>
+      <% } %>
       <h1><%= produit.nom %></h1>
+      <% if (produit.support === 'dibond') { %><p>Dibond · <%= produit.largeur_mm / 10 %> × <%= produit.hauteur_mm / 10 %> cm</p><% } %>
+      <% if (produit.support === 'textile') { %><p>Textile · <%= produit.taille %><%= produit.couleur ? ' · ' + produit.couleur : '' %></p><% } %>
+      <% if (produit.support === 'dibond' && produit.edition === 'limitee') { %>
+        <p>Édition limitée à <%= produit.tirage %> exemplaires, tous formats confondus. Maximum 3 par œuvre et par client, commandes cumulées.</p>
+        <% if (produit.exemplaires_restants !== null) { %><p role="status"><%= produit.exemplaires_restants %> exemplaire(s) disponible(s) à la réservation.</p><% } %>
+      <% } %>
+      <% if (produit.finition) { %><p><%= produit.finition %></p><% } %>
 
       <p class="fiche-produit-description">
         <%= produit.description %>
@@ -29,6 +39,7 @@
 
       <button
   class="ajout-produit"
+  <%= produit.exemplaires_restants === 0 ? 'disabled' : '' %>
   data-id="<%= produit.id %>"
   
 >

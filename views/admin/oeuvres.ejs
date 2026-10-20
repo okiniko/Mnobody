@@ -1,0 +1,18 @@
+<%- include("../partials/header", { titre: "Gérer les œuvres" }) %>
+<main class="page-admin page-admin-produits">
+  <a class="retour-boutique" href="/admin">← Administration</a>
+  <h1>Œuvres (<%= oeuvres.length %>)</h1>
+  <% if (succes) { %><p role="status"><%= succes %></p><% } %>
+  <p>Une œuvre regroupe son histoire, ses images et ses déclinaisons. Les produits existants restent indépendants jusqu’à leur rattachement.</p>
+  <p><a href="/admin/oeuvres/nouvelle">Créer une œuvre</a> · <a href="/admin/produits">Gérer les déclinaisons dans les produits</a></p>
+  <% if (!oeuvres.length) { %><p>Aucune œuvre pour le moment.</p><% } else { %>
+  <div class="table-admin" role="region" aria-label="Liste des œuvres" tabindex="0"><table>
+    <caption>Œuvres et déclinaisons</caption>
+    <thead><tr><th scope="col">Œuvre</th><th scope="col">Série</th><th scope="col">Statut</th><th scope="col">Déclinaisons</th><th scope="col">Actions</th></tr></thead>
+    <tbody><% oeuvres.forEach(o => { %><tr>
+      <th scope="row"><%= o.titre %></th><td><%= o.serie || '—' %></td><td><%= o.statut === 'publiee' ? 'Publiée' : o.statut === 'archivee' ? 'Archivée' : 'Brouillon' %></td>
+      <td><%= o.nombre_variantes %></td><td><a href="/admin/oeuvres/<%= o.id %>/modifier">Modifier</a><% if (o.statut === 'publiee') { %> · <a href="/oeuvre/<%= o.id %>">Voir la fiche</a><% } %></td>
+    </tr><% }); %></tbody>
+  </table></div><% } %>
+</main>
+<%- include("../partials/footer") %>

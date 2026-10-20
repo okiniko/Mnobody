@@ -1,17 +1,12 @@
-<%- include("partials/header", {
-  titre: "Accueil"
-}) %>
-
-<main class="page-accueil">
-
-  <h1>IAMNOBODY</h1>
-
-  <p>Bienvenue sur la boutique.</p>
-
-  <a href="/boutique">
-    Voir la boutique
-  </a>
-
-</main>
-
-<%- include("partials/footer") %>
+<%- include('partials/header', {titre: 'IAMNOBODY — Des regards, des mondes'}) %>
+<% const collection = typeof oeuvresAccueil !== 'undefined' ? oeuvresAccueil : []; const principale = collection[2] || collection[0]; %>
+<main class="accueil-art">
+  <section class="hero-art" aria-labelledby="titre-accueil">
+    <div class="hero-texte"><p class="surtitre-art">ART NUMÉRIQUE · ÉDITIONS LIMITÉES</p><h1 id="titre-accueil">Ce que l’on voit.<br><em>Ce qui nous<br>regarde.</em></h1><p class="intro-art">Des visages se dévoilent entre les lignes. Des regards émergent de la couleur. Entrez dans l’univers IAMNOBODY.</p><div class="actions-art"><a class="bouton-art" href="/galerie">Découvrir les œuvres <span aria-hidden="true">↗</span></a><a class="lien-art" href="/musee">Entrer dans le musée <span aria-hidden="true">→</span></a></div><p class="signature-hero">Une œuvre. Plusieurs lectures.</p></div>
+    <% if (principale) { %><figure class="hero-visuel"><a href="/oeuvre/<%= principale.id %>" aria-label="Découvrir <%= principale.titre %>"><div class="cadre-hero"><img src="/<%= principale.image %>" alt="<%= principale.titre %>" fetchpriority="high"></div></a><figcaption><span><%= principale.titre %></span><span>IAMNOBODY · COLLECTION <%= String(principale.id).padStart(2,'0') %></span></figcaption></figure><% } else { %><div class="hero-attente"><p>La collection se prépare.</p></div><% } %>
+  </section>
+  <div class="ligne-editions"><span>UNE COLLECTION À RENCONTRER</span><p><strong>49</strong> tirages par œuvre <span>·</span> Trois formats <span>·</span> Finition mate ou brillante</p><a href="/galerie">Explorer la collection ↗</a></div>
+  <% if (collection.length) { %><section class="selection-accueil" aria-labelledby="selection-accueil"><div class="titre-section"><div><p class="surtitre-art">DANS LA COLLECTION</p><h2 id="selection-accueil">À chaque regard,<br>une autre présence.</h2></div><a class="lien-art" href="/galerie">Toutes les œuvres →</a></div><div class="selection-grille"><% collection.filter(o=>o.id !== principale.id).slice(0,3).forEach((o,i)=>{ %><article><a href="/oeuvre/<%= o.id %>" class="selection-image"><img src="/<%= o.image %>" alt="<%= o.titre %>" loading="lazy"></a><div class="selection-legende"><div><p class="surtitre-art">ÉDITION DE 49 TIRAGES</p><h3><a href="/oeuvre/<%= o.id %>"><%= o.titre %></a></h3></div><a href="/oeuvre/<%= o.id %>" aria-label="Découvrir <%= o.titre %>">↗</a></div></article><% }); %></div></section><% } %>
+  <section class="invitation-musee" aria-labelledby="titre-musee-accueil"><div class="musee-texte"><p class="surtitre-art">LE MUSÉE VIRTUEL · TROIS SALLES</p><h2 id="titre-musee-accueil">L’art prend<br><em>une autre dimension.</em></h2><p>Une lumière douce, un espace pour chaque œuvre. Parcourez les salles, approchez-vous des tableaux et découvrez ce qui se cache dans leurs lignes.</p><a class="bouton-art bouton-contour" href="/musee">Commencer la visite <span aria-hidden="true">↗</span></a></div><div class="musee-evocation" aria-hidden="true"><span class="salle-numero">01 / 03</span><div class="tableaux-evocation"><% collection.slice(0,3).forEach(o=>{ %><img src="/<%= o.image %>" alt="" loading="lazy"><% }); %></div><span class="salle-legende">LA SALLE DES REGARDS</span></div></section>
+  <section class="editions-accueil" aria-labelledby="titre-editions"><div><p class="surtitre-art">DE L’ÉCRAN À VOTRE INTÉRIEUR</p><h2 id="titre-editions">Une présence<br>à garder.</h2></div><div class="details-editions"><p>Les œuvres sont proposées en tirages sur aluminium composite, avec une finition choisie pour chacune : mate pour les compositions en noir et blanc, brillante pour les couleurs.</p><div class="caracteristiques"><div><strong>49</strong><span>exemplaires par œuvre,<br>tous formats confondus</span></div><div><strong>3</strong><span>formats pour trouver<br>sa place chez vous</span></div></div><p class="disponibilite-art">Les tirages se préparent. Découvrez dès maintenant les œuvres et leurs formats dans la galerie.</p><a class="lien-art" href="/galerie">Voir les œuvres et les formats →</a></div></section>
+</main><%- include('partials/footer') %>

@@ -1,34 +1,19 @@
 const express = require("express");
-const fs = require("node:fs");
-const path = require("node:path");
+const { imagesDisponibles, lireId, validerVariante, enregistrerVariante } = require("./art");
 
 function routesProduits(db) {
   const router = express.Router();
-  // Ne jamais réattribuer l’identifiant d’un produit supprimé, notamment à cause des paniers sauvegardés.
-  db.exec(`CREATE TABLE IF NOT EXISTS compteur_produits (
-    id INTEGER PRIMARY KEY CHECK (id = 1), dernier_id INTEGER NOT NULL
-  );
-  INSERT INTO compteur_produits SELECT 1, coalesce(max(id), 0) FROM produits WHERE true
-  ON CONFLICT(id) DO UPDATE SET dernier_id = max(dernier_id, excluded.dernier_id);`);
   const categories = db.prepare("SELECT id, nom FROM categories ORDER BY nom COLLATE NOCASE");
-  const chercher = db.prepare("SELECT * FROM produits WHERE id = ?");
-  const liste = db.prepare(`SELECT p.*, c.nom AS categorie FROM produits p
-    JOIN categories c ON c.id = p.categorie_id ORDER BY p.id DESC`);
+  const chercher = db.prepare("SELECT p.*, v.* FROM produits p LEFT JOIN variantes v ON v.produit_id=p.id WHERE p.id = ?");
+  const liste = db.prepare(`SELECT p.*, c.nom AS categorie, o.titre AS oeuvre_titre, v.support FROM produits p
+    JOIN categories c ON c.id = p.categorie_id LEFT JOIN variantes v ON v.produit_id=p.id
+    LEFT JOIN oeuvres o ON o.id=v.oeuvre_id ORDER BY p.id DESC`);
   const messages = { creation: "Produit créé.", modification: "Produit modifié.", suppression: "Produit supprimé." };
 
-  function imagesDisponibles() {
-    return fs.readdirSync(path.join(__dirname, "public", "images"), { withFileTypes: true })
-      .filter(f => f.isFile() && /^[a-zA-Z0-9_.-]+\.(png|jpe?g|webp|avif|gif)$/i.test(f.name))
-      .map(f => `images/${f.name}`).sort((a, b) => a.localeCompare(b, "fr"));
-  }
-  function lireId(valeur) {
-    if (typeof valeur !== "string" || !/^[1-9]\d*$/.test(valeur)) return null;
-    const id = Number(valeur);
-    return Number.isSafeInteger(id) ? id : null;
-  }
   function formulaire(req, res, { id = null, valeurs = {}, erreurs = [], statut = 200 } = {}) {
     return res.status(statut).render("admin/produit-formulaire", {
       id, valeurs, erreurs, categories: categories.all(), images: imagesDisponibles(),
+      oeuvres: db.prepare("SELECT id, titre, statut FROM oeuvres ORDER BY titre COLLATE NOCASE").all(),
       csrf: req.sessionAdmin.csrf
     });
   }
@@ -61,7 +46,8 @@ function routesProduits(db) {
       erreurs.push("Choisissez une catégorie existante.");
     }
     if (!imagesDisponibles().includes(valeurs.image)) erreurs.push("Choisissez une image disponible.");
-    return { valeurs, erreurs, centimes, categorieId };
+    const art = validerVariante(db, body);
+    return { valeurs: { ...valeurs, ...art.valeurs }, erreurs: [...erreurs, ...art.erreurs], centimes, categorieId, variante: art.variante };
   }
 
   router.get("/", (req, res) => {
@@ -85,7 +71,7 @@ function routesProduits(db) {
   });
   router.get("/nouveau", (req, res) => formulaire(req, res));
   router.post("/", (req, res) => {
-    const { valeurs, erreurs, centimes, categorieId } = valider(req.body);
+    const { valeurs, erreurs, centimes, categorieId, variante } = valider(req.body);
     if (erreurs.length) return formulaire(req, res, { valeurs, erreurs, statut: 400 });
     db.exec("BEGIN IMMEDIATE");
     try {
@@ -94,6 +80,7 @@ function routesProduits(db) {
         WHERE id = 1 RETURNING dernier_id AS id`).get();
       db.prepare(`INSERT INTO produits (id, nom, description, image, prix_centimes, categorie_id)
         VALUES (?, ?, ?, ?, ?, ?)`).run(id, valeurs.nom, valeurs.description, valeurs.image, centimes, categorieId);
+      enregistrerVariante(db, id, variante);
       db.exec("COMMIT");
     } catch (erreur) {
       db.exec("ROLLBACK");
@@ -115,14 +102,23 @@ function routesProduits(db) {
   router.post("/:id/modifier", (req, res) => {
     const id = lireId(req.params.id);
     if (!id || !chercher.get(id)) return introuvable(res);
-    const { valeurs, erreurs, centimes, categorieId } = valider(req.body);
+    const { valeurs, erreurs, centimes, categorieId, variante } = valider(req.body);
     if (erreurs.length) return formulaire(req, res, { id, valeurs, erreurs, statut: 400 });
     let resultat;
+    const lien = db.prepare("SELECT count(*) AS n FROM tirages_editions WHERE produit_id=?").get(id).n;
+    const ancienne = chercher.get(id);
+    if (lien && (!variante || variante[0] !== ancienne.oeuvre_id || variante[1] !== ancienne.support || variante[2] !== ancienne.largeur_mm || variante[3] !== ancienne.hauteur_mm)) {
+      return formulaire(req, res, { id, valeurs, erreurs: ["Ce produit possède des tirages réservés ou vendus. Son œuvre, son support et ses dimensions doivent être conservés."], statut: 409 });
+    }
+    db.exec("BEGIN IMMEDIATE");
     try {
       resultat = db.prepare(`UPDATE produits SET nom = ?, description = ?, image = ?,
         prix_centimes = ?, categorie_id = ? WHERE id = ?`)
         .run(valeurs.nom, valeurs.description, valeurs.image, centimes, categorieId, id);
+      enregistrerVariante(db, id, variante);
+      db.exec("COMMIT");
     } catch (erreur) {
+      db.exec("ROLLBACK");
       if (erreur.message.includes("FOREIGN KEY constraint")) {
         return formulaire(req, res, { id, valeurs, erreurs: ["La catégorie n’existe plus. Choisissez-en une autre."], statut: 409 });
       }
@@ -140,6 +136,9 @@ function routesProduits(db) {
   router.post("/:id/supprimer", (req, res) => {
     const id = lireId(req.params.id);
     if (!id) return introuvable(res);
+    if (db.prepare("SELECT count(*) AS n FROM tirages_editions WHERE produit_id=?").get(id).n) {
+      return res.status(409).send("Ce produit possède des tirages réservés ou vendus. Marquez-le indisponible plutôt que de le supprimer.");
+    }
     const resultat = db.prepare("DELETE FROM produits WHERE id = ?").run(id);
     if (!resultat.changes) return introuvable(res);
     return res.redirect(303, "/admin/produits?succes=suppression");

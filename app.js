@@ -4,19 +4,18 @@ const { installerAdmin } = require("./admin");
 const path = require("path");
 
 const app = express();
+require("./securite").installerSecurite(app);
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 const db = ouvrirBase();
+app.use((req, res, next) => { res.locals.chemin = req.path; next(); });
 installerAdmin(app, db);
-const champsProduit = `
-  SELECT id, nom, description, image, prix_centimes / 100.0 AS prix,
-    categorie_id, (SELECT nom FROM categories WHERE categories.id = produits.categorie_id) AS categorie
-  FROM produits
-`;
-const listerProduits = db.prepare(`${champsProduit} ORDER BY id`);
-const chercherProduit = db.prepare(`${champsProduit} WHERE id = ?`);
+const { champsProduit, routesGalerie } = require("./galerie");
+app.use(routesGalerie(db));
+const listerProduits = db.prepare(`${champsProduit} ORDER BY p.id`);
+const chercherProduit = db.prepare(`${champsProduit} AND p.id = ?`);
 
 function trouverProduit(parametre) {
   const id = Number(parametre);
@@ -67,11 +66,12 @@ app.get("/produit/:id", (req, res) => {
 });
 
 app.get("/boutique", (req, res) => {
-  res.render("boutique");
+  res.redirect(301, "/galerie");
 });
 app.get("/", (req, res) => {
   res.render("index", {
-    titre: "Accueil"
+    titre: "IAMNOBODY — Des regards, des mondes",
+    oeuvresAccueil: db.prepare("SELECT id, titre, image FROM oeuvres WHERE statut='publiee' ORDER BY id LIMIT 6").all()
   });
 });
 app.get("/panier", (req, res) => {
@@ -79,4 +79,19 @@ app.get("/panier", (req, res) => {
     titre: "Panier"
   });
 });
-app.listen(process.env.PORT);
+app.get("/healthz", (req, res) => {
+  res.set("Cache-Control", "no-store");
+  try {
+    db.prepare("SELECT 1").get();
+    res.json({ statut: "ok" });
+  } catch {
+    res.status(503).json({ statut: "indisponible" });
+  }
+});
+app.use((req, res) => res.status(404).send("Page introuvable"));
+app.use((erreur, req, res, next) => {
+  console.error("Erreur serveur :", erreur);
+  if (res.headersSent) return next(erreur);
+  res.status(500).send("Erreur serveur");
+});
+app.listen(process.env.PORT || 3000);

@@ -153,3 +153,25 @@ test("confirme le retrait manuel et le vidage dans le panier", () => {
   env.panier.viderPanier();
   assert.equal(env.panier.messageSynchronisation.textContent, "Votre panier a été vidé.");
 });
+
+test("limite à trois tirages d’une même œuvre en cumulant les formats, sans limiter les textiles", async () => {
+  const petit={...produit(1),oeuvre_id:1,support:'dibond',exemplaires_restants:49};
+  const grand={...produit(2),oeuvre_id:1,support:'dibond',exemplaires_restants:49};
+  const textile={...produit(3),oeuvre_id:1,support:'textile'};
+  const env=environnement([],async()=>({ok:true,json:async()=>[petit,grand,textile]}));
+  env.panier.addToCart(petit);env.panier.addToCart(grand);env.panier.addToCart(grand);env.panier.addToCart(petit);
+  assert.equal(env.panier.items.reduce((n,i)=>n+i.quantite,0),3);
+  assert.match(env.panier.messageSynchronisation.textContent,/Maximum 3/);
+  for(let i=0;i<4;i++) env.panier.addToCart(textile);
+  assert.equal(env.panier.items.find(i=>i.id===3).quantite,4);
+});
+test("réduit un ancien panier au quota cumulé et aux exemplaires restants", async () => {
+  const a={...produit(1),oeuvre_id:1,support:'dibond',exemplaires_restants:2};
+  const b={...produit(2),oeuvre_id:1,support:'dibond',exemplaires_restants:2};
+  const env=environnement([{...a,quantite:2},{...b,quantite:3}],async()=>({ok:true,json:async()=>[a,b]}));
+  await env.panier.synchroniser();
+  assert.equal(env.panier.items.reduce((n,i)=>n+i.quantite,0),2);
+  assert.match(env.panier.messageSynchronisation.textContent,/quantités ont été ajustées/);
+  const vide=environnement([{...a,quantite:1}],async()=>({ok:true,json:async()=>[{...a,exemplaires_restants:0}]}));
+  await vide.panier.synchroniser();assert.equal(vide.panier.items.length,0);
+});

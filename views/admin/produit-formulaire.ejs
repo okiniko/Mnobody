@@ -40,6 +40,7 @@
     <% if (images.includes(valeurs.image)) { %>
       <img class="apercu-admin" src="/<%= valeurs.image %>" alt="Image sélectionnée">
     <% } %>
+    <%- include("variante-champs", { valeurs, oeuvres }) %>
     <button type="submit" class="voir-plus" <%= !categories.length || !images.length ? 'disabled' : '' %>>
       <%= id ? 'Enregistrer les modifications' : 'Créer le produit' %>
     </button>

@@ -1,0 +1,25 @@
+<%- include("../partials/header", { titre: id ? "Modifier une œuvre" : "Créer une œuvre" }) %>
+<main class="page-admin">
+  <a class="retour-boutique" href="/admin/oeuvres">← Œuvres</a>
+  <h1><%= id ? 'Modifier une œuvre' : 'Créer une œuvre' %></h1>
+  <% if (erreurs.length) { %><div role="alert"><p>L’œuvre n’a pas été enregistrée :</p><ul><% erreurs.forEach(e => { %><li><%= e %></li><% }); %></ul></div><% } %>
+  <form method="post" action="<%= id ? '/admin/oeuvres/' + id + '/modifier' : '/admin/oeuvres' %>" class="form-admin">
+    <input type="hidden" name="csrf" value="<%= csrf %>">
+    <label for="titre">Titre</label><input id="titre" name="titre" maxlength="200" value="<%= valeurs.titre || '' %>" required>
+    <label for="description">Histoire de l’œuvre</label><textarea id="description" name="description" rows="6" maxlength="8000" required><%= valeurs.description || '' %></textarea>
+    <label for="serie">Série (facultative)</label><input id="serie" name="serie" maxlength="200" value="<%= valeurs.serie || '' %>">
+    <label for="annee">Année (facultative)</label><input id="annee" name="annee" type="number" min="1" max="9999" value="<%= valeurs.annee || '' %>">
+    <label for="image">Image principale</label><select id="image" name="image" required><option value="">Choisir une image</option><% images.forEach(image => { %><option value="<%= image %>" <%= valeurs.image === image ? 'selected' : '' %>><%= image.slice(7) %></option><% }); %></select>
+    <label for="images">Images complémentaires (facultatives, 8 maximum)</label>
+    <select id="images" name="images" multiple size="6" aria-describedby="aide-images"><% images.forEach(image => { %><option value="<%= image %>" <%= (valeurs.images || []).includes(image) ? 'selected' : '' %>><%= image.slice(7) %></option><% }); %></select>
+    <small id="aide-images">Maintenez Ctrl ou Commande pour sélectionner plusieurs images. L’ordre suit la bibliothèque. Aucun fichier d’impression n’est publié ici.</small>
+    <input type="hidden" name="edition" value="limitee">
+    <input type="hidden" name="tirage" value="49">
+    <p><strong>Édition limitée à 49 tirages Dibond, tous formats confondus.</strong></p>
+    <p>Maximum 3 tirages par œuvre et par compte client vérifié, commandes cumulées. Les textiles restent hors de cette édition.</p>
+    <label for="statut">Publication</label><select id="statut" name="statut"><% [['brouillon','Brouillon'],['publiee','Publiée'],['archivee','Archivée']].forEach(([v,l]) => { %><option value="<%= v %>" <%= (valeurs.statut || 'brouillon') === v ? 'selected' : '' %>><%= l %></option><% }); %></select>
+    <small>Une œuvre en brouillon ou archivée et ses déclinaisons sont masquées au public. L’archivage conserve toutes les données.</small>
+    <button type="submit" class="voir-plus" <%= !images.length ? 'disabled' : '' %>>Enregistrer l’œuvre</button>
+  </form>
+</main>
+<%- include("../partials/footer") %>

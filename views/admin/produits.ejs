@@ -34,7 +34,7 @@
           <% produits.forEach(produit => { %>
             <tr>
               <td><img src="/<%= produit.image %>" alt="" width="60" height="60" loading="lazy"></td>
-              <th scope="row"><a href="/produit/<%= produit.id %>"><%= produit.nom %></a></th>
+              <th scope="row"><a href="/produit/<%= produit.id %>"><%= produit.nom %></a><% if (produit.oeuvre_titre) { %><br><small><%= produit.oeuvre_titre %> · <%= produit.support === "dibond" ? "Dibond" : "Textile" %></small><% } %></th>
               <td><%= produit.categorie %></td>
               <td><%= (produit.prix_centimes / 100).toFixed(2) %> €</td>
               <td class="actions-produit">
