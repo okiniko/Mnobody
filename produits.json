@@ -1,0 +1,842 @@
+[
+  {
+    "id": 1,
+    "nom": "T-shirt Abyss",
+    "description": "T-shirt noir avec visuel abyssal psychédélique et détails bioluminescents.",
+    "image": "images/t-shirt-abyss.png",
+    "prix": 29.9
+  },
+  {
+    "id": 2,
+    "nom": "T-shirt Ritual",
+    "description": "T-shirt premium avec illustration rituelle en sérigraphie.",
+    "image": "images/t-shirt-ritual.png",
+    "prix": 32.4
+  },
+  {
+    "id": 3,
+    "nom": "T-shirt Neon Skull",
+    "description": "T-shirt sombre avec crâne fluorescent et textures glitch.",
+    "image": "images/t-shirt-neon-skull.png",
+    "prix": 34.9
+  },
+  {
+    "id": 4,
+    "nom": "T-shirt Deep Signal",
+    "description": "T-shirt graphique inspiré des signaux électroniques et des profondeurs.",
+    "image": "images/t-shirt-deep-signal.png",
+    "prix": 37.4
+  },
+  {
+    "id": 5,
+    "nom": "T-shirt Fractal Wave",
+    "description": "T-shirt avec motif fractal dynamique et couleurs électriques.",
+    "image": "images/t-shirt-fractal-wave.png",
+    "prix": 39.9
+  },
+  {
+    "id": 6,
+    "nom": "T-shirt Void Creature",
+    "description": "T-shirt illustré d'une créature sombre surgissant du vide.",
+    "image": "images/t-shirt-void-creature.png",
+    "prix": 29.9
+  },
+  {
+    "id": 7,
+    "nom": "T-shirt Acid Temple",
+    "description": "T-shirt avec architecture psychédélique et accents acid.",
+    "image": "images/t-shirt-acid-temple.png",
+    "prix": 32.4
+  },
+  {
+    "id": 8,
+    "nom": "T-shirt Spectral",
+    "description": "T-shirt minimaliste avec silhouette spectrale lumineuse.",
+    "image": "images/t-shirt-spectral.png",
+    "prix": 34.9
+  },
+  {
+    "id": 9,
+    "nom": "T-shirt Submarine",
+    "description": "T-shirt avec paysage sous-marin stylisé et lumière cyan.",
+    "image": "images/t-shirt-submarine.png",
+    "prix": 37.4
+  },
+  {
+    "id": 10,
+    "nom": "T-shirt Digital Bones",
+    "description": "T-shirt avec squelette numérique et motifs cyber.",
+    "image": "images/t-shirt-digital-bones.png",
+    "prix": 39.9
+  },
+  {
+    "id": 11,
+    "nom": "Sweat Kraken",
+    "description": "Sweat à capuche avec illustration de kraken abyssal.",
+    "image": "images/sweat-kraken.png",
+    "prix": 59.9
+  },
+  {
+    "id": 12,
+    "nom": "Sweat Dark Ritual",
+    "description": "Sweat épais avec motifs occultes et textures sombres.",
+    "image": "images/sweat-dark-ritual.png",
+    "prix": 62.4
+  },
+  {
+    "id": 13,
+    "nom": "Sweat Neon Depth",
+    "description": "Sweat avec visuel marin fluorescent et contraste intense.",
+    "image": "images/sweat-neon-depth.png",
+    "prix": 64.9
+  },
+  {
+    "id": 14,
+    "nom": "Sweat Glitch Core",
+    "description": "Sweat graphique inspiré du glitch et des interfaces numériques.",
+    "image": "images/sweat-glitch-core.png",
+    "prix": 67.4
+  },
+  {
+    "id": 15,
+    "nom": "Sweat Fractal Storm",
+    "description": "Sweat avec composition fractale dense et mouvement visuel.",
+    "image": "images/sweat-fractal-storm.png",
+    "prix": 69.9
+  },
+  {
+    "id": 16,
+    "nom": "Sweat Deep Sea",
+    "description": "Sweat à capuche avec créature marine bioluminescente.",
+    "image": "images/sweat-deep-sea.png",
+    "prix": 59.9
+  },
+  {
+    "id": 17,
+    "nom": "Sweat Acid Bones",
+    "description": "Sweat avec squelette psychédélique et couleurs acid.",
+    "image": "images/sweat-acid-bones.png",
+    "prix": 62.4
+  },
+  {
+    "id": 18,
+    "nom": "Sweat Void Signal",
+    "description": "Sweat sombre avec signal abstrait et halos lumineux.",
+    "image": "images/sweat-void-signal.png",
+    "prix": 64.9
+  },
+  {
+    "id": 19,
+    "nom": "Sweat Cyber Ritual",
+    "description": "Sweat avec symbole rituel revisité en esthétique cyber.",
+    "image": "images/sweat-cyber-ritual.png",
+    "prix": 67.4
+  },
+  {
+    "id": 20,
+    "nom": "Sweat Night Creature",
+    "description": "Sweat avec créature nocturne stylisée et texture granuleuse.",
+    "image": "images/sweat-night-creature.png",
+    "prix": 69.9
+  },
+  {
+    "id": 21,
+    "nom": "Poster Fractal",
+    "description": "Poster grand format avec composition fractale colorée.",
+    "image": "images/poster-fractal.png",
+    "prix": 19.9
+  },
+  {
+    "id": 22,
+    "nom": "Poster Abyssal",
+    "description": "Poster décoratif avec paysage abyssal et couleurs intenses.",
+    "image": "images/poster-abyssal.png",
+    "prix": 22.4
+  },
+  {
+    "id": 23,
+    "nom": "Poster Neon Cathedral",
+    "description": "Poster représentant une cathédrale futuriste éclairée au néon.",
+    "image": "images/poster-neon-cathedral.png",
+    "prix": 24.9
+  },
+  {
+    "id": 24,
+    "nom": "Poster Skull Temple",
+    "description": "Poster avec crâne monumental et architecture imaginaire.",
+    "image": "images/poster-skull-temple.png",
+    "prix": 27.4
+  },
+  {
+    "id": 25,
+    "nom": "Poster Deep Portal",
+    "description": "Poster avec portail lumineux ouvrant sur un univers sous-marin.",
+    "image": "images/poster-deep-portal.png",
+    "prix": 29.9
+  },
+  {
+    "id": 26,
+    "nom": "Poster Acid Grid",
+    "description": "Poster graphique avec grille déformée et couleurs acid.",
+    "image": "images/poster-acid-grid.png",
+    "prix": 19.9
+  },
+  {
+    "id": 27,
+    "nom": "Poster Ritual Circle",
+    "description": "Poster avec cercle rituel abstrait et symboles géométriques.",
+    "image": "images/poster-ritual-circle.png",
+    "prix": 22.4
+  },
+  {
+    "id": 28,
+    "nom": "Poster Glitch Ocean",
+    "description": "Poster mélangeant textures océaniques et distorsions numériques.",
+    "image": "images/poster-glitch-ocean.png",
+    "prix": 24.9
+  },
+  {
+    "id": 29,
+    "nom": "Poster Void Geometry",
+    "description": "Poster minimaliste avec géométries flottantes dans un espace sombre.",
+    "image": "images/poster-void-geometry.png",
+    "prix": 27.4
+  },
+  {
+    "id": 30,
+    "nom": "Poster Bioluminescence",
+    "description": "Poster inspiré des organismes marins bioluminescents.",
+    "image": "images/poster-bioluminescence.png",
+    "prix": 29.9
+  },
+  {
+    "id": 31,
+    "nom": "Mug Glitch",
+    "description": "Mug noir avec visuel glitch et motifs numériques.",
+    "image": "images/mug-glitch.png",
+    "prix": 14.9
+  },
+  {
+    "id": 32,
+    "nom": "Mug Abyss",
+    "description": "Mug sombre avec créature abyssale stylisée.",
+    "image": "images/mug-abyss.png",
+    "prix": 17.4
+  },
+  {
+    "id": 33,
+    "nom": "Mug Neon Skull",
+    "description": "Mug avec crâne fluorescent et détails cyber.",
+    "image": "images/mug-neon-skull.png",
+    "prix": 19.9
+  },
+  {
+    "id": 34,
+    "nom": "Mug Fractal",
+    "description": "Mug avec motif fractal circulaire et couleurs vives.",
+    "image": "images/mug-fractal.png",
+    "prix": 22.4
+  },
+  {
+    "id": 35,
+    "nom": "Mug Deep Sea",
+    "description": "Mug avec scène marine nocturne.",
+    "image": "images/mug-deep-sea.png",
+    "prix": 24.9
+  },
+  {
+    "id": 36,
+    "nom": "Mug Ritual",
+    "description": "Mug avec symbole rituel graphique.",
+    "image": "images/mug-ritual.png",
+    "prix": 14.9
+  },
+  {
+    "id": 37,
+    "nom": "Mug Acid",
+    "description": "Mug avec motif acid et dégradés électriques.",
+    "image": "images/mug-acid.png",
+    "prix": 17.4
+  },
+  {
+    "id": 38,
+    "nom": "Mug Void",
+    "description": "Mug noir mat avec motif minimaliste inspiré du vide.",
+    "image": "images/mug-void.png",
+    "prix": 19.9
+  },
+  {
+    "id": 39,
+    "nom": "Mug Spectral",
+    "description": "Mug avec silhouette spectrale et halo lumineux.",
+    "image": "images/mug-spectral.png",
+    "prix": 22.4
+  },
+  {
+    "id": 40,
+    "nom": "Mug Cyber Bones",
+    "description": "Mug avec squelette cybernétique stylisé.",
+    "image": "images/mug-cyber-bones.png",
+    "prix": 24.9
+  },
+  {
+    "id": 41,
+    "nom": "Totebag Ritual",
+    "description": "Sac en toile imprimé avec motif sombre et graphique.",
+    "image": "images/totebag-ritual.png",
+    "prix": 18.9
+  },
+  {
+    "id": 42,
+    "nom": "Totebag Abyss",
+    "description": "Totebag avec créature abyssale en grand format.",
+    "image": "images/totebag-abyss.png",
+    "prix": 21.4
+  },
+  {
+    "id": 43,
+    "nom": "Totebag Fractal",
+    "description": "Totebag avec motif fractal monochrome.",
+    "image": "images/totebag-fractal.png",
+    "prix": 23.9
+  },
+  {
+    "id": 44,
+    "nom": "Totebag Neon Bones",
+    "description": "Totebag avec squelette fluorescent.",
+    "image": "images/totebag-neon-bones.png",
+    "prix": 26.4
+  },
+  {
+    "id": 45,
+    "nom": "Totebag Void",
+    "description": "Totebag minimaliste avec symbole du vide.",
+    "image": "images/totebag-void.png",
+    "prix": 28.9
+  },
+  {
+    "id": 46,
+    "nom": "Totebag Deep Sea",
+    "description": "Totebag avec paysage marin abstrait.",
+    "image": "images/totebag-deep-sea.png",
+    "prix": 18.9
+  },
+  {
+    "id": 47,
+    "nom": "Totebag Glitch",
+    "description": "Totebag avec texture glitch et typographie expérimentale.",
+    "image": "images/totebag-glitch.png",
+    "prix": 21.4
+  },
+  {
+    "id": 48,
+    "nom": "Totebag Acid",
+    "description": "Totebag avec motif acid et formes organiques.",
+    "image": "images/totebag-acid.png",
+    "prix": 23.9
+  },
+  {
+    "id": 49,
+    "nom": "Totebag Spectral",
+    "description": "Totebag avec silhouette spectrale.",
+    "image": "images/totebag-spectral.png",
+    "prix": 26.4
+  },
+  {
+    "id": 50,
+    "nom": "Totebag Temple",
+    "description": "Totebag avec architecture rituelle stylisée.",
+    "image": "images/totebag-temple.png",
+    "prix": 28.9
+  },
+  {
+    "id": 51,
+    "nom": "Casquette Neon",
+    "description": "Casquette noire avec broderie fluorescente.",
+    "image": "images/casquette-neon.png",
+    "prix": 24.9
+  },
+  {
+    "id": 52,
+    "nom": "Casquette Abyss",
+    "description": "Casquette sombre avec symbole abyssal brodé.",
+    "image": "images/casquette-abyss.png",
+    "prix": 27.4
+  },
+  {
+    "id": 53,
+    "nom": "Casquette Skull",
+    "description": "Casquette avec petit crâne graphique.",
+    "image": "images/casquette-skull.png",
+    "prix": 29.9
+  },
+  {
+    "id": 54,
+    "nom": "Casquette Ritual",
+    "description": "Casquette avec symbole rituel minimaliste.",
+    "image": "images/casquette-ritual.png",
+    "prix": 32.4
+  },
+  {
+    "id": 55,
+    "nom": "Casquette Glitch",
+    "description": "Casquette avec broderie inspirée du glitch.",
+    "image": "images/casquette-glitch.png",
+    "prix": 34.9
+  },
+  {
+    "id": 56,
+    "nom": "Casquette Void",
+    "description": "Casquette noire avec logo géométrique ton sur ton.",
+    "image": "images/casquette-void.png",
+    "prix": 24.9
+  },
+  {
+    "id": 57,
+    "nom": "Casquette Acid",
+    "description": "Casquette avec détails acid fluorescents.",
+    "image": "images/casquette-acid.png",
+    "prix": 27.4
+  },
+  {
+    "id": 58,
+    "nom": "Casquette Deep Sea",
+    "description": "Casquette avec emblème marin stylisé.",
+    "image": "images/casquette-deep-sea.png",
+    "prix": 29.9
+  },
+  {
+    "id": 59,
+    "nom": "Casquette Fractal",
+    "description": "Casquette avec broderie fractale.",
+    "image": "images/casquette-fractal.png",
+    "prix": 32.4
+  },
+  {
+    "id": 60,
+    "nom": "Casquette Spectral",
+    "description": "Casquette avec symbole spectral discret.",
+    "image": "images/casquette-spectral.png",
+    "prix": 34.9
+  },
+  {
+    "id": 61,
+    "nom": "Sticker Skull",
+    "description": "Sticker vinyle avec illustration de crâne psychédélique.",
+    "image": "images/sticker-skull.png",
+    "prix": 4.9
+  },
+  {
+    "id": 62,
+    "nom": "Sticker Abyss",
+    "description": "Sticker vinyle représentant une créature abyssale.",
+    "image": "images/sticker-abyss.png",
+    "prix": 7.4
+  },
+  {
+    "id": 63,
+    "nom": "Sticker Fractal",
+    "description": "Sticker holographique avec motif fractal.",
+    "image": "images/sticker-fractal.png",
+    "prix": 9.9
+  },
+  {
+    "id": 64,
+    "nom": "Sticker Acid",
+    "description": "Sticker fluorescent avec motif acid.",
+    "image": "images/sticker-acid.png",
+    "prix": 12.4
+  },
+  {
+    "id": 65,
+    "nom": "Sticker Ritual",
+    "description": "Sticker avec symbole rituel graphique.",
+    "image": "images/sticker-ritual.png",
+    "prix": 14.9
+  },
+  {
+    "id": 66,
+    "nom": "Sticker Glitch",
+    "description": "Sticker avec texture glitch numérique.",
+    "image": "images/sticker-glitch.png",
+    "prix": 4.9
+  },
+  {
+    "id": 67,
+    "nom": "Sticker Void",
+    "description": "Sticker minimaliste noir et blanc.",
+    "image": "images/sticker-void.png",
+    "prix": 7.4
+  },
+  {
+    "id": 68,
+    "nom": "Sticker Deep Sea",
+    "description": "Sticker avec créature bioluminescente.",
+    "image": "images/sticker-deep-sea.png",
+    "prix": 9.9
+  },
+  {
+    "id": 69,
+    "nom": "Sticker Neon",
+    "description": "Sticker avec contour néon.",
+    "image": "images/sticker-neon.png",
+    "prix": 12.4
+  },
+  {
+    "id": 70,
+    "nom": "Sticker Cyber",
+    "description": "Sticker avec forme cyber-organique.",
+    "image": "images/sticker-cyber.png",
+    "prix": 14.9
+  },
+  {
+    "id": 71,
+    "nom": "Print Skeleton",
+    "description": "Impression artistique représentant un squelette stylisé.",
+    "image": "images/print-skeleton.png",
+    "prix": 34.9
+  },
+  {
+    "id": 72,
+    "nom": "Print Abyss",
+    "description": "Print artistique avec créature abyssale détaillée.",
+    "image": "images/print-abyss.png",
+    "prix": 37.4
+  },
+  {
+    "id": 73,
+    "nom": "Print Fractal",
+    "description": "Print haute qualité avec composition fractale.",
+    "image": "images/print-fractal.png",
+    "prix": 39.9
+  },
+  {
+    "id": 74,
+    "nom": "Print Neon Temple",
+    "description": "Print représentant un temple futuriste au néon.",
+    "image": "images/print-neon-temple.png",
+    "prix": 42.4
+  },
+  {
+    "id": 75,
+    "nom": "Print Deep Portal",
+    "description": "Print avec portail lumineux dans une scène sombre.",
+    "image": "images/print-deep-portal.png",
+    "prix": 44.9
+  },
+  {
+    "id": 76,
+    "nom": "Print Glitch Face",
+    "description": "Print portrait déformé par des effets glitch.",
+    "image": "images/print-glitch-face.png",
+    "prix": 34.9
+  },
+  {
+    "id": 77,
+    "nom": "Print Ritual",
+    "description": "Print avec symboles rituels et géométrie complexe.",
+    "image": "images/print-ritual.png",
+    "prix": 37.4
+  },
+  {
+    "id": 78,
+    "nom": "Print Biolume",
+    "description": "Print inspiré des organismes bioluminescents.",
+    "image": "images/print-biolume.png",
+    "prix": 39.9
+  },
+  {
+    "id": 79,
+    "nom": "Print Void Form",
+    "description": "Print minimaliste avec formes flottantes.",
+    "image": "images/print-void-form.png",
+    "prix": 42.4
+  },
+  {
+    "id": 80,
+    "nom": "Print Acid Skull",
+    "description": "Print avec crâne acid et couleurs saturées.",
+    "image": "images/print-acid-skull.png",
+    "prix": 44.9
+  },
+  {
+    "id": 81,
+    "nom": "Hoodie Deep Sea",
+    "description": "Hoodie épais avec créature marine bioluminescente.",
+    "image": "images/hoodie-deep-sea.png",
+    "prix": 69.9
+  },
+  {
+    "id": 82,
+    "nom": "Hoodie Abyss",
+    "description": "Hoodie noir avec grande illustration abyssale.",
+    "image": "images/hoodie-abyss.png",
+    "prix": 72.4
+  },
+  {
+    "id": 83,
+    "nom": "Hoodie Ritual",
+    "description": "Hoodie avec motif rituel en sérigraphie.",
+    "image": "images/hoodie-ritual.png",
+    "prix": 74.9
+  },
+  {
+    "id": 84,
+    "nom": "Hoodie Glitch",
+    "description": "Hoodie avec design glitch digital.",
+    "image": "images/hoodie-glitch.png",
+    "prix": 77.4
+  },
+  {
+    "id": 85,
+    "nom": "Hoodie Fractal",
+    "description": "Hoodie avec composition fractale complexe.",
+    "image": "images/hoodie-fractal.png",
+    "prix": 79.9
+  },
+  {
+    "id": 86,
+    "nom": "Hoodie Neon Skull",
+    "description": "Hoodie avec crâne néon et effets lumineux.",
+    "image": "images/hoodie-neon-skull.png",
+    "prix": 69.9
+  },
+  {
+    "id": 87,
+    "nom": "Hoodie Void",
+    "description": "Hoodie minimaliste avec symbole du vide.",
+    "image": "images/hoodie-void.png",
+    "prix": 72.4
+  },
+  {
+    "id": 88,
+    "nom": "Hoodie Acid Temple",
+    "description": "Hoodie avec temple psychédélique et accents acid.",
+    "image": "images/hoodie-acid-temple.png",
+    "prix": 74.9
+  },
+  {
+    "id": 89,
+    "nom": "Hoodie Spectral",
+    "description": "Hoodie avec silhouette spectrale.",
+    "image": "images/hoodie-spectral.png",
+    "prix": 77.4
+  },
+  {
+    "id": 90,
+    "nom": "Hoodie Cyber Bones",
+    "description": "Hoodie avec squelette cybernétique.",
+    "image": "images/hoodie-cyber-bones.png",
+    "prix": 79.9
+  },
+  {
+    "id": 91,
+    "nom": "Badge Acid",
+    "description": "Badge rond avec motif acid et couleurs fluorescentes.",
+    "image": "images/badge-acid.png",
+    "prix": 3.9
+  },
+  {
+    "id": 92,
+    "nom": "Badge Abyss",
+    "description": "Badge avec symbole abyssal.",
+    "image": "images/badge-abyss.png",
+    "prix": 6.4
+  },
+  {
+    "id": 93,
+    "nom": "Badge Skull",
+    "description": "Badge avec petit crâne graphique.",
+    "image": "images/badge-skull.png",
+    "prix": 8.9
+  },
+  {
+    "id": 94,
+    "nom": "Badge Fractal",
+    "description": "Badge avec motif fractal.",
+    "image": "images/badge-fractal.png",
+    "prix": 11.4
+  },
+  {
+    "id": 95,
+    "nom": "Badge Ritual",
+    "description": "Badge avec symbole rituel.",
+    "image": "images/badge-ritual.png",
+    "prix": 13.9
+  },
+  {
+    "id": 96,
+    "nom": "Badge Glitch",
+    "description": "Badge avec effet glitch.",
+    "image": "images/badge-glitch.png",
+    "prix": 3.9
+  },
+  {
+    "id": 97,
+    "nom": "Badge Void",
+    "description": "Badge noir minimaliste.",
+    "image": "images/badge-void.png",
+    "prix": 6.4
+  },
+  {
+    "id": 98,
+    "nom": "Badge Neon",
+    "description": "Badge avec motif fluorescent.",
+    "image": "images/badge-neon.png",
+    "prix": 8.9
+  },
+  {
+    "id": 99,
+    "nom": "Badge Deep Sea",
+    "description": "Badge avec créature marine.",
+    "image": "images/badge-deep-sea.png",
+    "prix": 11.4
+  },
+  {
+    "id": 100,
+    "nom": "Badge Cyber",
+    "description": "Badge avec symbole cyber.",
+    "image": "images/badge-cyber.png",
+    "prix": 13.9
+  },
+  {
+    "id": 101,
+    "nom": "Tapis de souris Abyss",
+    "description": "Grand tapis de souris avec paysage abyssal panoramique.",
+    "image": "images/tapis-de-souris-abyss.png",
+    "prix": 27.9
+  },
+  {
+    "id": 102,
+    "nom": "Tapis de souris Fractal",
+    "description": "Tapis de souris avec motif fractal haute définition.",
+    "image": "images/tapis-de-souris-fractal.png",
+    "prix": 30.4
+  },
+  {
+    "id": 103,
+    "nom": "Tapis de souris Glitch",
+    "description": "Tapis de souris avec textures numériques.",
+    "image": "images/tapis-de-souris-glitch.png",
+    "prix": 32.9
+  },
+  {
+    "id": 104,
+    "nom": "Tapis de souris Neon Skull",
+    "description": "Tapis de souris avec crâne néon.",
+    "image": "images/tapis-de-souris-neon-skull.png",
+    "prix": 35.4
+  },
+  {
+    "id": 105,
+    "nom": "Tapis de souris Ritual",
+    "description": "Tapis de souris avec cercle rituel.",
+    "image": "images/tapis-de-souris-ritual.png",
+    "prix": 37.9
+  },
+  {
+    "id": 106,
+    "nom": "Tapis de souris Void",
+    "description": "Tapis de souris sombre minimaliste.",
+    "image": "images/tapis-de-souris-void.png",
+    "prix": 27.9
+  },
+  {
+    "id": 107,
+    "nom": "Tapis de souris Deep Sea",
+    "description": "Tapis de souris avec créatures marines.",
+    "image": "images/tapis-de-souris-deep-sea.png",
+    "prix": 30.4
+  },
+  {
+    "id": 108,
+    "nom": "Tapis de souris Acid",
+    "description": "Tapis de souris avec dégradés acid.",
+    "image": "images/tapis-de-souris-acid.png",
+    "prix": 32.9
+  },
+  {
+    "id": 109,
+    "nom": "Tapis de souris Cyber",
+    "description": "Tapis de souris avec grille cyber.",
+    "image": "images/tapis-de-souris-cyber.png",
+    "prix": 35.4
+  },
+  {
+    "id": 110,
+    "nom": "Tapis de souris Spectral",
+    "description": "Tapis de souris avec formes spectrales.",
+    "image": "images/tapis-de-souris-spectral.png",
+    "prix": 37.9
+  },
+  {
+    "id": 111,
+    "nom": "Sweat zippé Abyss",
+    "description": "Sweat zippé avec visuel abyssal sur le dos.",
+    "image": "images/sweat-zippe-abyss.png",
+    "prix": 64.9
+  },
+  {
+    "id": 112,
+    "nom": "Sweat zippé Ritual",
+    "description": "Sweat zippé avec symboles rituels.",
+    "image": "images/sweat-zippe-ritual.png",
+    "prix": 67.4
+  },
+  {
+    "id": 113,
+    "nom": "Sweat zippé Glitch",
+    "description": "Sweat zippé avec design glitch.",
+    "image": "images/sweat-zippe-glitch.png",
+    "prix": 69.9
+  },
+  {
+    "id": 114,
+    "nom": "Sweat zippé Neon",
+    "description": "Sweat zippé avec détails fluorescents.",
+    "image": "images/sweat-zippe-neon.png",
+    "prix": 72.4
+  },
+  {
+    "id": 115,
+    "nom": "Sweat zippé Fractal",
+    "description": "Sweat zippé avec motif fractal.",
+    "image": "images/sweat-zippe-fractal.png",
+    "prix": 74.9
+  },
+  {
+    "id": 116,
+    "nom": "Sweat zippé Deep Sea",
+    "description": "Sweat zippé avec scène marine sombre.",
+    "image": "images/sweat-zippe-deep-sea.png",
+    "prix": 64.9
+  },
+  {
+    "id": 117,
+    "nom": "Sweat zippé Void",
+    "description": "Sweat zippé noir avec logo minimal.",
+    "image": "images/sweat-zippe-void.png",
+    "prix": 67.4
+  },
+  {
+    "id": 118,
+    "nom": "Sweat zippé Acid",
+    "description": "Sweat zippé avec accents acid.",
+    "image": "images/sweat-zippe-acid.png",
+    "prix": 69.9
+  },
+  {
+    "id": 119,
+    "nom": "Sweat zippé Cyber Bones",
+    "description": "Sweat zippé avec squelette cyber.",
+    "image": "images/sweat-zippe-cyber-bones.png",
+    "prix": 72.4
+  },
+  {
+    "id": 120,
+    "nom": "Sweat zippé Spectral",
+    "description": "Sweat zippé avec motif spectral.",
+    "image": "images/sweat-zippe-spectral.png",
+    "prix": 74.9
+  }
+]

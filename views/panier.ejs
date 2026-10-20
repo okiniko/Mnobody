@@ -1,0 +1,38 @@
+<%- include("partials/header", {
+  titre: titre
+}) %>
+
+<main class="page-panier">
+
+  <section class="panier-complet">
+
+    <h1>Votre panier</h1>
+<p class="panier-vide">
+      Votre panier est vide.
+    </p>
+
+    <ul class="cart-list"></ul>
+
+    <div class="total"></div>
+
+    <div class="panier-actions">
+
+      <a href="/boutique" class="retour-boutique">
+        ← Continuer mes achats
+      </a>
+
+      <button class="buycart">
+        PASSER LA COMMANDE
+      </button>
+
+      <button class="vider">
+        VIDER LE PANIER
+      </button>
+
+    </div>
+
+  </section>
+
+</main>
+
+<%- include("partials/footer") %>

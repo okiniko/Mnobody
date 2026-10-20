@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pen</title>
+  </head>
+  <body>
+<main>
+  <section class="catalogue">
+  <div class="product-list"></div>
+
+  <div class="catalogue-actions"></div>
+</section>
+  <aside>
+    <h2>PANIER</h2>
+    <ul class="cart-list">
+    
+    </ul>
+    <p class="total"></p>
+    <button class="buycart">ACHETER</button>
+    <button class="vider">VIDER</button>
+  </aside>
+</main>
+    <script src="./script.js"></script>
+  </body>
+</html>

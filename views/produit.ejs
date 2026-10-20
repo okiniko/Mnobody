@@ -1,0 +1,44 @@
+<%- include("partials/header", {
+  titre: titre
+}) %>
+
+<main class="page-produit">
+<a href="/boutique" class="retour-boutique">
+    ← Retour à la boutique
+  </a>
+  <section class="fiche-produit">
+
+    <div class="fiche-produit-image">
+      <img
+        src="/<%= produit.image %>"
+        alt="<%= produit.nom %>"
+      >
+    </div>
+
+    <div class="fiche-produit-infos">
+
+      <h1><%= produit.nom %></h1>
+
+      <p class="fiche-produit-description">
+        <%= produit.description %>
+      </p>
+
+      <p class="fiche-produit-prix">
+        <%= produit.prix.toFixed(2) %> €
+      </p>
+
+      <button
+  class="ajout-produit"
+  data-id="<%= produit.id %>"
+  
+>
+  AJOUTER AU PANIER
+</button>
+
+    </div>
+
+  </section>
+
+</main>
+
+<%- include("partials/footer") %>
