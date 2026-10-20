@@ -1,0 +1,11 @@
+<%- include("../partials/header", { titre: "Supprimer un produit" }) %>
+<main class="page-admin">
+  <h1>Supprimer un produit</h1>
+  <p>Confirmer la suppression du produit « <%= produit.nom %> » ? Il sera retiré de la boutique.</p>
+  <form method="post" action="/admin/produits/<%= produit.id %>/supprimer">
+    <input type="hidden" name="csrf" value="<%= csrf %>">
+    <button type="submit" class="voir-plus">Confirmer la suppression</button>
+  </form>
+  <a class="retour-boutique" href="/admin/produits">Annuler et revenir aux produits</a>
+</main>
+<%- include("../partials/footer") %>

@@ -1,11 +1,43 @@
+let chargementProduits;
+
+function chargerProduits() {
+  // Une seule requête pour le catalogue et le panier pendant ce chargement de page.
+  if (!chargementProduits) {
+    chargementProduits = fetch("/api/produits", { cache: "no-store" })
+      .then(reponse => {
+        if (!reponse.ok) throw new Error("Impossible de charger les produits");
+        return reponse.json();
+      })
+      .then(produits => {
+        const ids = new Set();
+        if (!Array.isArray(produits) || !produits.every(produit => {
+          if (!produit || !Number.isSafeInteger(produit.id) || produit.id <= 0 ||
+              ids.has(produit.id) || typeof produit.nom !== "string" ||
+              typeof produit.description !== "string" || typeof produit.image !== "string" ||
+              !Number.isFinite(produit.prix) || produit.prix < 0) return false;
+          ids.add(produit.id);
+          return true;
+        })) {
+          throw new Error("Le catalogue reçu est invalide");
+        }
+        return produits;
+      });
+  }
+  return chargementProduits;
+}
+
 const productList = document.querySelector(".product-list");
 
 if (productList) {
-  fetch("/api/produits")
-    .then(reponse => reponse.json())
+  chargerProduits()
     .then(produits => {
       const catalogue = new Catalogue(produits);
       catalogue.afficherProduits();
+    })
+    .catch(erreur => {
+      console.error(erreur);
+      productList.textContent =
+        "Impossible de charger le catalogue. Veuillez réessayer.";
     });
 }
 class Catalogue {
@@ -27,27 +59,31 @@ class Catalogue {
   this.controles.classList.add("catalogue-controles");
 
   this.recherche = document.createElement("input");
+  this.recherche.setAttribute("aria-label", "Rechercher un produit");
   this.recherche.type = "search";
   this.recherche.placeholder = "Rechercher un produit...";
 
   this.filtre = document.createElement("select");
+this.filtre.setAttribute("aria-label", "Filtrer par catégorie");
+  const tous = document.createElement("option");
+  tous.value = "tous";
+  tous.textContent = "Tous les produits";
+  this.filtre.append(tous);
 
-  this.filtre.innerHTML = `
-    <option value="tous">Tous les produits</option>
-    <option value="T-shirt">T-shirts</option>
-    <option value="Sweat">Sweats</option>
-    <option value="Hoodie">Hoodies</option>
-    <option value="Poster">Posters</option>
-    <option value="Mug">Mugs</option>
-    <option value="Totebag">Totebags</option>
-    <option value="Casquette">Casquettes</option>
-    <option value="Sticker">Stickers</option>
-    <option value="Print">Prints</option>
-    <option value="Badge">Badges</option>
-  `;
+  const categories = new Map(this.produits.map(produit => [
+    produit.categorie_id, produit.categorie
+  ]));
+  [...categories.entries()]
+    .sort((a, b) => a[1].localeCompare(b[1], "fr"))
+    .forEach(([id, nom]) => {
+      const option = document.createElement("option");
+      option.value = String(id);
+      option.textContent = nom;
+      this.filtre.append(option);
+    });
 
   this.tri = document.createElement("select");
-
+this.tri.setAttribute("aria-label", "Trier les produits");
   this.tri.innerHTML = `
     <option value="defaut">Trier</option>
     <option value="prix-asc">Prix croissant</option>
@@ -88,7 +124,7 @@ class Catalogue {
 
     const correspondCategorie =
       categorie === "tous" ||
-      produit.nom.startsWith(categorie);
+      String(produit.categorie_id) === categorie;
 
     return correspondRecherche && correspondCategorie;
   });
@@ -130,10 +166,14 @@ class Catalogue {
 
     cardADD.classList.add("ajout");
 
-    cardNom.textContent = produit.nom;
-    cardDesc.textContent = produit.description;
-    cardPrice.textContent = produit.prix + " €";
+const lienProduit = document.createElement("a");
+lienProduit.href = `/produit/${produit.id}`;
+lienProduit.textContent = produit.nom;
+cardNom.append(lienProduit);
+cardDesc.textContent = produit.description;
+cardPrice.textContent = produit.prix.toFixed(2) + " €";
     cardImage.src = produit.image;
+    cardImage.alt = produit.nom;
     cardADD.textContent = "AJOUTER";
 
     cardADD.addEventListener("click", (event) => {
@@ -207,16 +247,100 @@ class Catalogue {
 }
 }
 class Panier {
-  constructor(items =  JSON.parse(localStorage.getItem("panier")) || []){
-    this.items = items;
+  constructor() {
+  this.items = [];
+
+  try {
+    const sauvegarde = JSON.parse(localStorage.getItem("panier"));
+
+    if (Array.isArray(sauvegarde)) {
+      this.items = sauvegarde.filter(item =>
+  item !== null &&
+  typeof item === "object" &&
+  Number.isSafeInteger(item.id) &&
+  item.id > 0 &&
+  typeof item.nom === "string" &&
+  Number.isFinite(item.prix) &&
+  item.prix >= 0 &&
+  Number.isSafeInteger(item.quantite) &&
+  item.quantite > 0
+);
+    }
+  } catch (erreur) {
+    console.error("Impossible de lire le panier sauvegardé :", erreur);
+  }
 	  this.list = document.querySelector(".cart-list");
     this.total = document.querySelector(".total");
     this.boutonVider = document.querySelector(".vider");
+
+    this.messageSynchronisation = null;
+    if (this.list) {
+      this.messageSynchronisation = document.createElement("p");
+      this.messageSynchronisation.classList.add("panier-synchronisation");
+      this.messageSynchronisation.setAttribute("role", "status");
+      this.messageSynchronisation.setAttribute("aria-live", "polite");
+      this.list.before(this.messageSynchronisation);
+      try {
+        this.messageSynchronisation.textContent = sessionStorage.getItem("panier-avis") || "";
+        sessionStorage.removeItem("panier-avis");
+      } catch (erreur) {
+        console.error("Impossible de lire l’avis du panier :", erreur);
+      }
+    }
 
     this.boutonVider?.addEventListener("click", () => {
       this.viderPanier();
     });
   }
+  afficherAvis(message) {
+    if (this.messageSynchronisation) {
+      this.messageSynchronisation.textContent = message;
+    } else {
+      try {
+        const precedent = sessionStorage.getItem("panier-avis") || "";
+        sessionStorage.setItem("panier-avis", [precedent, message].filter(Boolean).join(" "));
+      } catch (erreur) {
+        console.error("Impossible de conserver l’avis du panier :", erreur);
+      }
+    }
+  }
+  async synchroniser() {
+    if (this.items.length === 0) return;
+    const avisPrecedent = this.messageSynchronisation?.textContent || "";
+    try {
+      const produits = await chargerProduits();
+      const catalogue = new Map(produits.map(produit => [produit.id, produit]));
+      let retires = 0;
+      let actualises = 0;
+      // Lire les articles après la réponse : conserver les changements effectués entre-temps.
+      this.items = this.items.flatMap(item => {
+        const produit = catalogue.get(item.id);
+        if (!produit) {
+          retires++;
+          return [];
+        }
+        if (["nom", "description", "image", "prix", "categorie_id", "categorie"]
+          .some(champ => item[champ] !== produit[champ])) {
+          actualises++;
+        }
+        return [{ ...produit, quantite: item.quantite }];
+      });
+      this.majPanier();
+      {
+        const messages = [];
+        if (actualises) messages.push("Les informations et les prix de votre panier ont été actualisés.");
+        if (retires) messages.push("Les produits qui ne sont plus disponibles ont été retirés du panier.");
+        if (messages.length) this.afficherAvis([avisPrecedent, ...messages].filter(Boolean).join(" "));
+      }
+    } catch (erreur) {
+      console.error("Impossible de synchroniser le panier :", erreur);
+      if (this.messageSynchronisation) {
+        this.messageSynchronisation.textContent =
+          "Impossible de vérifier le panier. Les informations sauvegardées sont conservées. Réessayez en rechargeant la page.";
+      }
+    }
+  }
+
   addToCart(produit) {
   const produitExistant = this.items.find(item => item.id === produit.id);
 
@@ -274,19 +398,30 @@ class Panier {
 
     const nom = document.createElement("span");
     nom.textContent =
-      `${item.nom} - ${item.prix} €`;
-
+`${item.nom} - ${item.prix.toFixed(2)} €`;
     const moins = document.createElement("button");
     moins.textContent = "-";
+    moins.setAttribute(
+  "aria-label",
+  `Diminuer la quantité de ${item.nom}`
+);
 
     const quantite = document.createElement("span");
     quantite.textContent = item.quantite;
 
     const plus = document.createElement("button");
     plus.textContent = "+";
+    plus.setAttribute(
+  "aria-label",
+  `Augmenter la quantité de ${item.nom}`
+);
 
     const suppr = document.createElement("button");
     suppr.textContent = "X";
+    suppr.setAttribute(
+  "aria-label",
+  `Supprimer ${item.nom} du panier`
+);
 
     plus.addEventListener("click", () => {
       item.quantite++;
@@ -341,8 +476,12 @@ class Panier {
   modal.confirmation(
     `Supprimer "${produit.nom}" du panier ?`,
     () => {
-      this.items.splice(index, 1);
-      this.majPanier();
+      const indexActuel = this.items.findIndex(item => item.id === id);
+      if (indexActuel !== -1) {
+        this.items.splice(indexActuel, 1);
+        this.majPanier();
+        this.afficherAvis(`« ${produit.nom} » a été retiré du panier.`);
+      }
     }
   );
 }
@@ -352,11 +491,16 @@ class Panier {
     () => {
       this.items = [];
       this.majPanier();
+      this.afficherAvis("Votre panier a été vidé.");
     }
   );
 }
   sauvegarderPanier() {
-  localStorage.setItem("panier", JSON.stringify(this.items));
+  try {
+    localStorage.setItem("panier", JSON.stringify(this.items));
+  } catch (erreur) {
+    console.error("Impossible de sauvegarder le panier :", erreur);
+  }
 }
   majPanier() {
   this.sauvegarderPanier();
@@ -368,60 +512,129 @@ class Panier {
 class Modal {
   constructor() {
     this.overlay = null;
+    this.fermetureEnCours = false;
+    this.elementPrecedent = null;
+    this.elementsArrierePlan = [];
   }
 
   confirmation(message, action) {
+    if (this.overlay) return;
+
+    this.elementPrecedent = document.activeElement;
     this.overlay = document.createElement("div");
     this.overlay.classList.add("modal-confirmation");
+    const overlay = this.overlay;
 
     const modal = document.createElement("div");
     modal.classList.add("modal-content");
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("aria-labelledby", "confirmation-titre");
+    modal.setAttribute("aria-describedby", "confirmation-message");
 
     const titre = document.createElement("h2");
+    titre.id = "confirmation-titre";
     titre.textContent = "Confirmation";
 
     const texte = document.createElement("p");
+    texte.id = "confirmation-message";
     texte.textContent = message;
 
     const actions = document.createElement("div");
     actions.classList.add("modal-actions");
 
     const annuler = document.createElement("button");
+    annuler.type = "button";
     annuler.textContent = "ANNULER";
     annuler.classList.add("modal-annuler");
 
     const confirmer = document.createElement("button");
+    confirmer.type = "button";
     confirmer.textContent = "CONFIRMER";
     confirmer.classList.add("modal-confirmer");
 
     actions.append(annuler, confirmer);
     modal.append(titre, texte, actions);
-    this.overlay.append(modal);
+    overlay.append(modal);
+    document.body.append(overlay);
 
-    document.body.append(this.overlay);
-requestAnimationFrame(() => {
-  this.overlay.classList.add("visible");
-});
+    this.elementsArrierePlan = [...document.body.children]
+      .filter(element => element !== overlay && !element.inert);
+    this.elementsArrierePlan.forEach(element => {
+      element.inert = true;
+    });
+
+    annuler.focus();
+    requestAnimationFrame(() => {
+      if (!this.fermetureEnCours && this.overlay === overlay) {
+        overlay.classList.add("visible");
+      }
+    });
+
+    modal.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        this.fermer();
+      } else if (event.key === "Tab") {
+        event.preventDefault();
+        const cible = document.activeElement === annuler
+          ? confirmer
+          : annuler;
+        cible.focus();
+      }
+    });
+
     annuler.addEventListener("click", () => {
       this.fermer();
     });
 
     confirmer.addEventListener("click", () => {
-      action();
-      this.fermer();
+      if (this.fermetureEnCours) return;
+      try {
+        action();
+      } finally {
+        this.fermer();
+      }
     });
   }
 
   fermer() {
-  if (!this.overlay) return;
+    if (!this.overlay || this.fermetureEnCours) return;
+    this.fermetureEnCours = true;
+    const overlay = this.overlay;
+    overlay.classList.remove("visible");
 
-  this.overlay.classList.remove("visible");
+    setTimeout(() => {
+      overlay.remove();
+      this.elementsArrierePlan.forEach(element => {
+        element.inert = false;
+      });
+      this.elementsArrierePlan = [];
+      this.overlay = null;
+      this.fermetureEnCours = false;
 
-  setTimeout(() => {
-    this.overlay.remove();
-    this.overlay = null;
-  }, 300);
-}
+      const precedent = this.elementPrecedent;
+      this.elementPrecedent = null;
+      if (precedent?.isConnected) {
+        precedent.focus();
+      }
+
+      // La mise à jour du panier peut supprimer ou masquer le bouton initial.
+      if (document.activeElement === document.body) {
+        const main = document.querySelector("main");
+        if (main) {
+          const ancienTabindex = main.getAttribute("tabindex");
+          main.setAttribute("tabindex", "-1");
+          main.focus();
+          if (ancienTabindex === null) {
+            main.removeAttribute("tabindex");
+          } else {
+            main.setAttribute("tabindex", ancienTabindex);
+          }
+        }
+      }
+    }, 300);
+  }
 }
 const modal = new Modal();
 const panier = new Panier();
@@ -432,7 +645,13 @@ if (boutonProduit) {
     const id = boutonProduit.dataset.id;
 
     fetch(`/api/produits/${id}`)
-      .then(reponse => reponse.json())
+      .then(reponse => {
+  if (!reponse.ok) {
+    throw new Error("Impossible de charger ce produit");
+  }
+
+  return reponse.json();
+})
       .then(produit => {
         panier.addToCart(produit);
       })
@@ -445,3 +664,4 @@ if (boutonProduit) {
   });
 }
 panier.majPanier();
+panier.synchroniser();

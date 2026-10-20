@@ -1,0 +1,53 @@
+<%- include("../partials/header", { titre: "Gérer les catégories" }) %>
+<main class="page-admin">
+  <a class="retour-boutique" href="/admin">← Administration</a>
+  <h1>Catégories</h1>
+  <% if (erreur) { %><p role="alert"><%= erreur %></p><% } %>
+  <% if (succes) { %><p role="status"><%= succes %></p><% } %>
+  <section aria-labelledby="nouvelle-categorie">
+    <h2 id="nouvelle-categorie">Ajouter une catégorie</h2>
+    <form method="post" action="/admin/categories" class="form-admin">
+      <input type="hidden" name="csrf" value="<%= csrf %>">
+      <label for="nom-categorie">Nom</label>
+      <input id="nom-categorie" name="nom" maxlength="100" value="<%= nomCreation %>" required>
+      <button type="submit" class="voir-plus">Créer la catégorie</button>
+    </form>
+  </section>
+  <section aria-labelledby="categories-existantes">
+    <h2 id="categories-existantes">Catégories existantes (<%= categories.length %>)</h2>
+    <form method="get" action="/admin/categories" class="form-admin filtres-admin" role="search" aria-label="Rechercher des catégories">
+      <div><label for="recherche-categories">Nom</label>
+        <input type="search" id="recherche-categories" name="q" value="<%= recherche %>" placeholder="Rechercher une catégorie…"></div>
+      <div><label for="filtre-etat">Contenu</label>
+        <select id="filtre-etat" name="etat">
+          <option value="">Toutes les catégories</option>
+          <option value="avec-produits" <%= etat === 'avec-produits' ? 'selected' : '' %>>Avec produits</option>
+          <option value="vides" <%= etat === 'vides' ? 'selected' : '' %>>Vides</option>
+        </select></div>
+      <button type="submit" class="voir-plus">Rechercher</button>
+      <a href="/admin/categories">Réinitialiser</a>
+    </form>
+    <p role="status"><%= categories.length %> catégorie(s) affichée(s) sur <%= total %>.</p>
+    <% if (!categories.length) { %><p><%= total ? "Aucune catégorie ne correspond à votre recherche." : "Aucune catégorie pour le moment." %></p><% } %>
+    <ul class="categories-admin">
+      <% categories.forEach(categorie => { %>
+        <li>
+          <form method="post" action="/admin/categories/<%= categorie.id %>/renommer" class="form-admin">
+            <input type="hidden" name="csrf" value="<%= csrf %>">
+            <label for="categorie-<%= categorie.id %>">Nom de la catégorie</label>
+            <input id="categorie-<%= categorie.id %>" name="nom" maxlength="100" required
+              value="<%= idModification === categorie.id ? nomModification : categorie.nom %>">
+            <p><%= categorie.nombre_produits %> produit(s)</p>
+            <button type="submit" class="voir-plus">Enregistrer le nom</button>
+          </form>
+          <% if (categorie.nombre_produits === 0) { %>
+            <a href="/admin/categories/<%= categorie.id %>/supprimer">Supprimer cette catégorie</a>
+          <% } else { %>
+            <p>Pour supprimer cette catégorie, réaffectez d’abord ses produits.</p>
+          <% } %>
+        </li>
+      <% }); %>
+    </ul>
+  </section>
+</main>
+<%- include("../partials/footer") %>

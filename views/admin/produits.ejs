@@ -1,0 +1,51 @@
+<%- include("../partials/header", { titre: "Gérer les produits" }) %>
+<main class="page-admin page-admin-produits">
+  <a class="retour-boutique" href="/admin">← Administration</a>
+  <h1>Produits (<%= total %>)</h1>
+  <% if (succes) { %><p role="status"><%= succes %></p><% } %>
+  <p><a href="/admin/produits/nouveau">Ajouter un produit</a></p>
+  <form method="get" action="/admin/produits" class="form-admin filtres-admin" role="search" aria-label="Rechercher des produits">
+    <div><label for="recherche-produits">Nom ou description</label>
+      <input type="search" id="recherche-produits" name="q" value="<%= recherche %>" placeholder="Rechercher un produit…"></div>
+    <div><label for="filtre-categorie">Catégorie</label>
+      <select id="filtre-categorie" name="categorie">
+        <option value="">Toutes les catégories</option>
+        <% categories.forEach(c => { %><option value="<%= c.id %>" <%= categorie === String(c.id) ? 'selected' : '' %>><%= c.nom %></option><% }); %>
+      </select></div>
+    <div><label for="tri-produits">Trier par</label>
+      <select id="tri-produits" name="tri">
+        <% [['recent', 'Ajouts récents'], ['nom', 'Nom (A–Z)'], ['prix_asc', 'Prix croissant'], ['prix_desc', 'Prix décroissant']].forEach(([valeur, libelle]) => { %>
+          <option value="<%= valeur %>" <%= tri === valeur ? 'selected' : '' %>><%= libelle %></option>
+        <% }); %>
+      </select></div>
+    <button type="submit" class="voir-plus">Rechercher</button>
+    <a href="/admin/produits">Réinitialiser</a>
+  </form>
+  <p role="status"><%= produits.length %> produit(s) affiché(s) sur <%= total %>.</p>
+  <% if (!produits.length) { %><p><%= total ? "Aucun produit ne correspond à votre recherche." : "Aucun produit pour le moment." %></p><% } else { %>
+    <div class="table-admin" role="region" aria-label="Liste des produits" tabindex="0">
+      <table>
+        <caption>Catalogue des produits</caption>
+        <thead><tr>
+          <th scope="col">Image</th><th scope="col">Produit</th><th scope="col">Catégorie</th>
+          <th scope="col">Prix</th><th scope="col">Actions</th>
+        </tr></thead>
+        <tbody>
+          <% produits.forEach(produit => { %>
+            <tr>
+              <td><img src="/<%= produit.image %>" alt="" width="60" height="60" loading="lazy"></td>
+              <th scope="row"><a href="/produit/<%= produit.id %>"><%= produit.nom %></a></th>
+              <td><%= produit.categorie %></td>
+              <td><%= (produit.prix_centimes / 100).toFixed(2) %> €</td>
+              <td class="actions-produit">
+                <a href="/admin/produits/<%= produit.id %>/modifier" aria-label="Modifier <%= produit.nom %>">Modifier</a>
+                <a href="/admin/produits/<%= produit.id %>/supprimer" aria-label="Supprimer <%= produit.nom %>">Supprimer</a>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</main>
+<%- include("../partials/footer") %>

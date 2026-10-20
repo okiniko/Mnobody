@@ -1,0 +1,48 @@
+<%- include("../partials/header", { titre: id ? "Modifier un produit" : "Ajouter un produit" }) %>
+<main class="page-admin">
+  <a class="retour-boutique" href="/admin/produits">← Produits</a>
+  <h1><%= id ? "Modifier un produit" : "Ajouter un produit" %></h1>
+  <% if (erreurs.length) { %>
+    <div role="alert"><p>Le produit n’a pas été enregistré :</p>
+      <ul><% erreurs.forEach(erreur => { %><li><%= erreur %></li><% }); %></ul>
+    </div>
+  <% } %>
+  <% if (!categories.length) { %>
+    <p>Créez d’abord une catégorie pour pouvoir enregistrer un produit.</p>
+    <p><a href="/admin/categories">Gérer les catégories</a></p>
+  <% } %>
+  <% if (!images.length) { %><p>Aucune image disponible dans le catalogue.</p><% } %>
+  <form method="post" action="<%= id ? '/admin/produits/' + id + '/modifier' : '/admin/produits' %>" class="form-admin">
+    <input type="hidden" name="csrf" value="<%= csrf %>">
+    <label for="produit-nom">Nom</label>
+    <input id="produit-nom" name="nom" maxlength="200" value="<%= valeurs.nom || '' %>" required>
+    <label for="produit-description">Description</label>
+    <textarea id="produit-description" name="description" rows="6" maxlength="4000" required><%= valeurs.description || '' %></textarea>
+    <label for="produit-prix">Prix en euros</label>
+    <input id="produit-prix" name="prix" type="text" inputmode="decimal" maxlength="9" placeholder="29,90"
+      aria-describedby="aide-prix" value="<%= valeurs.prix || '' %>" required>
+    <small id="aide-prix">Virgule ou point accepté, deux décimales au maximum.</small>
+    <label for="produit-categorie">Catégorie</label>
+    <select id="produit-categorie" name="categorie_id" required>
+      <option value="">Choisir une catégorie</option>
+      <% categories.forEach(categorie => { %>
+        <option value="<%= categorie.id %>" <%= String(valeurs.categorie_id) === String(categorie.id) ? 'selected' : '' %>><%= categorie.nom %></option>
+      <% }); %>
+    </select>
+    <label for="produit-image">Image</label>
+    <select id="produit-image" name="image" required aria-describedby="aide-image">
+      <option value="">Choisir une image</option>
+      <% images.forEach(image => { %>
+        <option value="<%= image %>" <%= valeurs.image === image ? 'selected' : '' %>><%= image.slice(7) %></option>
+      <% }); %>
+    </select>
+    <small id="aide-image">Choisissez une image déjà présente dans la bibliothèque.</small>
+    <% if (images.includes(valeurs.image)) { %>
+      <img class="apercu-admin" src="/<%= valeurs.image %>" alt="Image sélectionnée">
+    <% } %>
+    <button type="submit" class="voir-plus" <%= !categories.length || !images.length ? 'disabled' : '' %>>
+      <%= id ? 'Enregistrer les modifications' : 'Créer le produit' %>
+    </button>
+  </form>
+</main>
+<%- include("../partials/footer") %>

@@ -1,0 +1,15 @@
+<%- include("../partials/header", { titre: "Supprimer une catégorie" }) %>
+<main class="page-admin">
+  <h1>Supprimer une catégorie</h1>
+  <% if (categorie.nombre_produits > 0) { %>
+    <p>La catégorie « <%= categorie.nom %> » contient des produits et ne peut pas être supprimée.</p>
+  <% } else { %>
+    <p>Confirmer la suppression de la catégorie « <%= categorie.nom %> » ?</p>
+    <form method="post" action="/admin/categories/<%= categorie.id %>/supprimer">
+      <input type="hidden" name="csrf" value="<%= csrf %>">
+      <button type="submit" class="voir-plus">Confirmer la suppression</button>
+    </form>
+  <% } %>
+  <a class="retour-boutique" href="/admin/categories">Retour aux catégories</a>
+</main>
+<%- include("../partials/footer") %>
